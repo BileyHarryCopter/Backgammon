@@ -52,8 +52,7 @@ void run_backgammon()
 
     if (mainloop.init() == false)
         std::cout << "Can't initialize a Mainloop object\n";
-    else
-    {
+    else {
         bool quit = false;
 
         SDL_Event event;

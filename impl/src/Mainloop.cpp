@@ -1,28 +1,43 @@
 #include <iostream>
+
 #include "CustomException.hpp"
-#include "Mainloop.hpp"
-#include "Window.hpp"
+#include        "Mainloop.hpp"
+#include          "Window.hpp"
 
 namespace Backgammon 
 {
-
-using namespace Custom_Exceptions;
 
 bool Mainloop::init ()
 {   
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
     {
-        SDL_Init_Exception{"Error"};
+        Custom_Exceptions::SDL_Init_Exception{SDL_GetError()};
         return false;
     }
     else 
     {
         //  Create window
-        mWindow = Window{"Really Armenian Backgammon",  SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                                                        SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE};
+        mWindow   = Window  {"Really Armenian Backgammon",  SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                                                            SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE};
 
+        //  Create renderer
         mRenderer = Renderer{mWindow.get_window_ptr(),  FIRST_SUITABLE, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC};
         mRenderer.set_renderer_draw_color(0xFF, 0xFF, 0xFF, 0xFF);
+
+        //  Initialize PNG loading
+        int png_flags = IMG_INIT_PNG;
+        if (!(IMG_Init(png_flags) & png_flags))
+        {
+            Custom_Exceptions::IMG_Init_Exception{SDL_GetError()};
+            return false;
+        }
+
+         //Initialize SDL_mixer
+        if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 )
+        {
+            Custom_Exceptions::Mix_OpenAudio_Exception{SDL_GetError()};
+            return false;
+        }
     }
 
     return true;
@@ -30,7 +45,9 @@ bool Mainloop::init ()
 
 void Mainloop::close()
 {
-    //  Shut down SDL
+    //  Quit SDL subsystems
+    Mix_Quit();
+    IMG_Quit();
     SDL_Quit();
 }
 

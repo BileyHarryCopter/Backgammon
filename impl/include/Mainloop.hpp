@@ -1,6 +1,8 @@
 #ifndef MAINLOOP_HPP
 #define MAINLOOP_HPP
 
+#include <vector>
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
@@ -9,6 +11,7 @@
 #include "CustomException.hpp"
 #include "Window.hpp"
 #include "Renderer.hpp"
+#include "Texture.hpp"
 
 namespace Backgammon
 {
@@ -20,14 +23,31 @@ namespace Custom_Exceptions
         SDL_Init_Exception(const std::string& error_msg) :
             Print_Exception("Failure of initialization of SDL Library with error: " + error_msg) {}
     };
+
+    struct IMG_Init_Exception : public Print_Exception
+    {
+        IMG_Init_Exception(const std::string& error_msg) :
+            Print_Exception("Failure with initialization of SDL_image: " + error_msg) {}
+    };
+
+    struct Mix_OpenAudio_Exception : public Print_Exception
+    {
+        Mix_OpenAudio_Exception(const std::string& error_msg) :
+            Print_Exception("Failure with initialization of SDL_mixer: " + error_msg) {}
+    };
 }
 
 class Mainloop
 {
-    Mix_Music*    mMysic    = nullptr;
-    TTF_Font*     mFont     = nullptr;
-    Window        mWindow;
-    Renderer      mRenderer;
+    Mix_Music*           mMysic    = nullptr;
+#ifdef FONTS_SUPPORT
+    TTF_Font*            mFont     = nullptr;
+#endif
+    Window               mWindow;
+    Renderer             mRenderer;
+#ifdef TEXTURES_SUPPORT  
+    std::vector<Texture> mTextures;
+#endif
 
 public:
     Mainloop() {}

@@ -1,30 +1,29 @@
 #ifndef TEXTURE_HPP
 #define TEXTURE_HPP
 
-#include <iostream>
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
 
-struct point {
-    int x;
-    int y;
+#include "CustomException.hpp"
+
+namespace Backgammon
+{
+
+class Texture
+{
+
+using texture_ptr = SDL_Texture*;
+using texture_t   = SDL_Texture;
+using size_t      = std::size_t;
+
+    texture_ptr texture_ = nullptr;
+    size_t width_ = 0, height_ = 0;
+
+public:
+
+    Texture (){}
+    ~Texture(){}
+
 };
-
-class Texture {
-    private:
-        SDL_Texture* mTexture = nullptr;
-        point pos;  // position on window
-        int h = 0;  // height
-        int w = 0;  // width
-    
-    public:
-        Texture(std::string path);
-        ~Texture();
-
-        void move(point dst);
-
-
-        
-};
+}
 
 #endif

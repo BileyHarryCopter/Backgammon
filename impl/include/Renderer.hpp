@@ -9,7 +9,6 @@
 namespace Backgammon
 {
 
-using namespace Custom_Exceptions;
 namespace Custom_Exceptions
 {
     struct Create_Render_Exception : public Print_Exception
@@ -38,8 +37,8 @@ class Renderer final
 
 using renderer_ptr = SDL_Renderer*;
 using renderer_t   = SDL_Renderer;
-using window_ptr = SDL_Window*;
-using window_t   = SDL_Window;
+using window_ptr   = SDL_Window*;
+using window_t     = SDL_Window;
 
     renderer_ptr renderer_ = nullptr;
 
@@ -51,7 +50,7 @@ public:
     {
         renderer_ = SDL_CreateRenderer(window, index, flags);
         if (renderer_ == NULL)
-            Create_Render_Exception{SDL_GetError()};
+            Custom_Exceptions::Create_Render_Exception{SDL_GetError()};
     }
 
     //  To avoid double SDL_DestroyWindow()
@@ -75,13 +74,13 @@ public:
     void set_renderer_draw_color (uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)
     {
         if (SDL_SetRenderDrawColor (renderer_, red, green, blue, alpha) < 0)
-            Set_Render_DrawColor_Exception{SDL_GetError()};
+            Custom_Exceptions::Set_Render_DrawColor_Exception{SDL_GetError()};
     }
 
     void render_clear ()
     {
         if (SDL_RenderClear(renderer_) < 0)
-            Render_Clear_Exception{SDL_GetError()};
+            Custom_Exceptions::Render_Clear_Exception{SDL_GetError()};
     }
 
     void render_present ()  { SDL_RenderPresent(renderer_); }

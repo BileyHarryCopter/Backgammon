@@ -12,7 +12,6 @@ static const char *error = SDL_GetError();
 namespace Backgammon
 {
 
-using namespace Custom_Exceptions;
 namespace Custom_Exceptions
 {
 
@@ -49,7 +48,7 @@ public:
     {
         window_ = SDL_CreateWindow(title_.data(), posx_, posy_, width_, height_, flags);
         if (window_ == NULL)
-            Create_Window_Exception{SDL_GetError()};
+            Custom_Exceptions::Create_Window_Exception{SDL_GetError()};
     }
 
     //  To avoid double SDL_DestroyWindow()

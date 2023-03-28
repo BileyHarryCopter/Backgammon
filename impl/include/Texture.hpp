@@ -22,6 +22,9 @@ class Texture {
         ~Texture();
 
         void move(point dst);
+
+
+        
 };
 
 #endif

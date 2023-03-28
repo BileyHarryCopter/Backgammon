@@ -8,6 +8,11 @@
 namespace Backgammon
 {
 
+struct Point 
+{
+    int x_= 0, y_= 0;
+};
+
 class Texture
 {
 
@@ -22,6 +27,8 @@ public:
 
     Texture (){}
     ~Texture(){}
+
+    void move (Point dst);
 
 };
 }

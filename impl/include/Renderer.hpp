@@ -37,8 +37,8 @@ class Renderer final
 
 using renderer_ptr = SDL_Renderer*;
 using renderer_t   = SDL_Renderer;
-using window_ptr = SDL_Window*;
-using window_t   = SDL_Window;
+using window_ptr   = SDL_Window*;
+using window_t     = SDL_Window;
 
     renderer_ptr renderer_ = nullptr;
 

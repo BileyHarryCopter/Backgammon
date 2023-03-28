@@ -15,7 +15,7 @@ using texture_ptr = SDL_Texture*;
 using texture_t   = SDL_Texture;
 using size_t      = std::size_t;
 
-    SDL_Texture* texture_ = nullptr;
+    texture_ptr texture_ = nullptr;
     size_t width_ = 0, height_ = 0;
 
 public:

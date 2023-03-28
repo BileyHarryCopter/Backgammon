@@ -39,7 +39,10 @@ namespace Custom_Exceptions
 
 class Mainloop
 {
-    Mix_Music*           mMysic    = nullptr;
+
+using music_ptr = Mix_Music *;
+
+    music_ptr            music_    = nullptr;
 #ifdef FONTS_SUPPORT
     TTF_Font*            mFont     = nullptr;
 #endif

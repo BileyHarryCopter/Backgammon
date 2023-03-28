@@ -51,7 +51,7 @@ public:
     {
         renderer_ = SDL_CreateRenderer(window, index, flags);
         if (renderer_ == NULL)
-            Create_Render_Exception("Error");
+            Create_Render_Exception{SDL_GetError()};
     }
 
     //  To avoid double SDL_DestroyWindow()
@@ -75,13 +75,13 @@ public:
     void set_renderer_draw_color (uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)
     {
         if (SDL_SetRenderDrawColor (renderer_, red, green, blue, alpha) < 0)
-            Set_Render_DrawColor_Exception("Error");
+            Set_Render_DrawColor_Exception{SDL_GetError()};
     }
 
     void render_clear ()
     {
         if (SDL_RenderClear(renderer_) < 0)
-            Render_Clear_Exception("Error");
+            Render_Clear_Exception{SDL_GetError()};
     }
 
     void render_present ()  { SDL_RenderPresent(renderer_); }

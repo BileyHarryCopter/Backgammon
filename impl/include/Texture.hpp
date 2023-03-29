@@ -14,13 +14,13 @@ using renderer_ptr = SDL_Renderer*;
 using texture_ptr  = SDL_Texture*;
 using texture_t    = SDL_Texture;
 using size_t       = std::size_t;
-using point        = SDL_Point;
+using point_t        = SDL_Point;
 
 class Texture {
 
     private:
         texture_ptr mTexture = nullptr;
-        point pos = {               
+        point_t pos = {               
             SDL_WINDOWPOS_CENTERED, 
             SDL_WINDOWPOS_CENTERED
         };  
@@ -31,7 +31,7 @@ class Texture {
         Texture  (std::string& path, size_t x, size_t y, renderer_ptr renderer);
         ~Texture ();
 
-        void move (point dst);
+        void move (point_t dst);
         void move (int delta_x, int delta_y);   
 };
 

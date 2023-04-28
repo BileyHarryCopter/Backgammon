@@ -78,7 +78,7 @@ public:
     //  Clear and present renderer
     void clear_renderer()   { renderer_.render_clear(); }
     void present_renderer() { renderer_.render_present(); }
-    renderer_ptr get_renderer() { renderer_.get(); }
+    renderer_ptr get_renderer() { return renderer_.get(); }
 
     void draw_texture(const std::string& id,int x, int y, size_t width, size_t height,
                                             SDL_RendererFlip flip, renderer_ptr renderer);

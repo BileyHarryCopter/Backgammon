@@ -36,9 +36,8 @@ Mainloop::~Mainloop()
 
 bool Mainloop::loadmedia()
 {
-    SDLTexture::Texture texture{};
-
-    texture.load("./assets/board_test.jpg", renderer_.get());
+    std::string path {"./assets/board_test.jpg"};
+    SDLTexture::Texture texture (path, renderer_.get());
 
     textures_.insert({"board_test", texture});
 

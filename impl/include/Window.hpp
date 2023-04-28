@@ -9,18 +9,13 @@
 
 static const char *error = SDL_GetError();
 
-namespace Backgammon
-{
-
 namespace Custom_Exceptions
 {
-
-struct Create_Window_Exception : public Print_Exception
-{
-    Create_Window_Exception(const std::string& error_msg) :
-            Print_Exception("Failure of creation the window with error: " + error_msg) {}
-};
-
+    struct Create_Window_Exception : public Print_Exception
+    {
+        Create_Window_Exception(const std::string& error_msg) :
+                Print_Exception("Failure of creation the window with error: " + error_msg) {}
+    };
 }
 
 //  convenient constants for Window class:
@@ -42,7 +37,6 @@ using str_t      = std::string;
 
 public:
 
-    Window () {}
     Window (const str_t& title, int posx, int posy, size_t width, size_t height, uint32_t flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE):
             title_{title}, posx_{posx}, posy_{posy}, width_{width}, height_{height}
     {
@@ -53,22 +47,10 @@ public:
 
     //  To avoid double SDL_DestroyWindow()
     Window(const Window &rhs) = delete;
+    Window &operator=(const Window &rhs) = delete;
 
-    Window(Window&& rhs) noexcept : title_{ std::exchange(rhs.title_, 0)}, posx_{std::exchange(rhs.posx_, 0)}, posy_{std::exchange(rhs.posy_, 0)}, 
-                                    width_{ std::exchange(rhs.width_, 0)}, height_{std::exchange(rhs.height_, 0)}, 
-                                    window_{std::exchange(rhs.window_, nullptr)} {}
-
-    Window& operator= (Window&& rhs)
-    {
-        std::swap(title_,  rhs.title_);
-        std::swap(posx_,   rhs.posx_);
-        std::swap(posy_,   rhs.posy_);
-        std::swap(width_,  rhs.width_);
-        std::swap(height_, rhs.height_);
-        std::swap(window_, rhs.window_);
-
-        return *this;
-    }
+    Window(Window &&rhs) = delete;
+    Window &operator=(Window &&rhs) = delete;
 
     ~Window () 
     {
@@ -87,10 +69,10 @@ public:
     int get_posy()              { return posy_; }
     size_t get_width()          { return width_; }
     size_t get_height()         { return height_; }
-    window_ptr get_window_ptr() { return window_; }
+
+    window_ptr       get_window_ptr()       { return window_; }
+    const window_ptr get_window_ptr() const { return window_; }
 
 };  //  class Window
-
-}
 
 #endif

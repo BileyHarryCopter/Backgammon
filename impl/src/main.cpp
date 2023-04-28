@@ -1,7 +1,7 @@
-#include "../include/Mainloop.hpp"
+#include "Mainloop.hpp"
 
 int main(int argc, char** argv)
 {
-    Backgammon::run_backgammon();
+    SDLMainloop::run_backgammon();
     return 0;
 }

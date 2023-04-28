@@ -8,14 +8,14 @@ Texture::Texture (std::string& path, size_t x = 0, size_t y = 0, renderer_ptr re
     SDL_Surface* loadedSurface = IMG_Load(path.c_str());
 
     if (loadedSurface == nullptr) {
-        std::cout << "Unable to load image " << path << "! SDL_image Error: " << IMG_GetError() << std::endl;
+        Custom_Exceptions::IMG_Load_Exception{SDL_GetError()};
     }
 
     else {
         mTexture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
 
         if(mTexture == nullptr) {
-            std::cout << "Unable to create texture from " << path << "! SDL Error: " << SDL_GetError() << std::endl;
+            Custom_Exceptions::SDL_CreateTextureFromSurface_Exception{SDL_GetError()};
         }
 
         else {
@@ -28,15 +28,10 @@ Texture::Texture (std::string& path, size_t x = 0, size_t y = 0, renderer_ptr re
             }
 
             else {
-                std::cout << "Demensions of texture < 0! SDL Error: " << SDL_GetError() << std::endl;
+                Custom_Exceptions::SDL_CreateTextureFromSurface_Exception{SDL_GetError()};
             }
 
-            if (x < 0 || x > SCREEN_WIDTH)
-                std::cout << "Texture X position is out of bounds!" << std::endl;
             pos.x = x;
-
-            if (y < 0 || y > SCREEN_HEIGHT)
-                std::cout << "Texture Y position is out of bounds!" << std::endl;
             pos.y = y;
         }
 
@@ -48,7 +43,7 @@ Texture::~Texture() {
     if(mTexture != nullptr)
         SDL_DestroyTexture(mTexture);
     else
-        std::cout << "Unable to destroy texture! SDL Error: " << SDL_GetError() << std::endl;
+        Custom_Exceptions::SDL_DistructTexture_Exception{SDL_GetError()};
 }
 
 void Texture::move (point_t dst) {

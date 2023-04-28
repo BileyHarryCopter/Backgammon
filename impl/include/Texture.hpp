@@ -1,8 +1,6 @@
-
 #ifndef TEXTURE_HPP
 #define TEXTURE_HPP
 
-#include <iostream>
 #include <map>
 #include <string>
 #include <SDL2/SDL.h>
@@ -28,6 +26,11 @@ namespace Custom_Exceptions
     {
         SDL_RenderCopyEx(const std::string& error_msg) :
             Print_Exception("Attempt to render unexisting texture: ") {}
+    };
+
+    struct SDL_DistructTexture_Exception : public Print_Exception {
+        SDL_DistructTexture_Exception (const std::string& error_msg) :
+            Print_Exception("Failure to distruct texture with error: " + error_msg) {}
     };
 }
 

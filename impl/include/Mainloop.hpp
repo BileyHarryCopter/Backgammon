@@ -86,7 +86,7 @@ public:
 
 private:
 
-    SDLTexture::Texture &get_texture(const std::string &id) { return textures_[id]; }
+    SDLTexture::Texture& get_texture(const std::string &id) { return textures_.at(id); }
 
 }; //   end of Mainloop's class
 

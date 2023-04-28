@@ -34,14 +34,16 @@ namespace Custom_Exceptions
     };
 }
 
+namespace SDLTexture
+{
+
 using renderer_ptr = SDL_Renderer*;
 using texture_ptr  =  SDL_Texture*;
 using texture_t    =   SDL_Texture;
 using size_t       =   std::size_t;
 using point_t      =     SDL_Point;
 
-namespace SDLTexture
-{
+
 
 class Texture {
 
@@ -53,7 +55,7 @@ class Texture {
     
     public:
         Texture  (std::string& path, renderer_ptr renderer,
-            size_t x = SDL_WINDOWPOS_CENTERED, size_t y = SDL_WINDOWPOS_CENTERED);
+            int x = SDL_WINDOWPOS_CENTERED, int y = SDL_WINDOWPOS_CENTERED);
         ~Texture ();
 
         void move (point_t dst);

@@ -3,8 +3,7 @@
 namespace SDLTexture
 {
 
-Texture::Texture (std::string& path, renderer_ptr renderer, 
-    size_t x = SDL_WINDOWPOS_CENTERED, size_t y = SDL_WINDOWPOS_CENTERED) : pos{x, y} {
+Texture::Texture (std::string& path, renderer_ptr renderer, int x, int y) : pos{x, y} {
 
     SDL_Surface* loadedSurface = IMG_Load(path.c_str());
 

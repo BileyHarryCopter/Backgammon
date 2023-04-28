@@ -4,9 +4,6 @@
 #include <stdexcept>
 #include <SDL2/SDL_error.h>
 
-namespace Backgammon
-{
-
 namespace Custom_Exceptions
 {
 
@@ -14,8 +11,7 @@ namespace Custom_Exceptions
     {
         Print_Exception(const std::string& msg) : std::runtime_error(msg.data()){}
     };
-}
-
+    
 }
 
 #endif

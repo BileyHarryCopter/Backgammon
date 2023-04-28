@@ -3,12 +3,35 @@
 #define TEXTURE_HPP
 
 #include <iostream>
+#include <map>
+#include <string>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
 #include "Window.hpp"
 
-namespace Backgammon
+namespace Custom_Exceptions
+{
+    struct IMG_Load_Exception : public Print_Exception
+    {
+        IMG_Load_Exception(const std::string& error_msg) :
+            Print_Exception("Failure of loading img with error: " + error_msg) {}
+    };
+
+    struct SDL_CreateTextureFromSurface_Exception : public Print_Exception
+    {
+        SDL_CreateTextureFromSurface_Exception(const std::string& error_msg) :
+            Print_Exception("Failure of initialization of SDL Library with error: " + error_msg) {}
+    };
+
+    struct SDL_RenderCopyEx : public Print_Exception
+    {
+        SDL_RenderCopyEx(const std::string& error_msg) :
+            Print_Exception("Attempt to render unexisting texture: ") {}
+    };
+}
+
+namespace SDLTexture
 {
 
 using renderer_ptr = SDL_Renderer*;

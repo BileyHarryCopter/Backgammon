@@ -1,13 +1,13 @@
 #ifndef RENDERER_HPP
 #define RENDERER_HPP
 
+#include <map>
+#include <string>
 #include <utility>
 #include <SDL2/SDL.h>
 
 #include "CustomException.hpp"
-
-namespace Backgammon
-{
+#include "Window.hpp"
 
 namespace Custom_Exceptions
 {
@@ -36,40 +36,36 @@ class Renderer final
 {
 
 using renderer_ptr = SDL_Renderer*;
-using renderer_t   = SDL_Renderer;
-using window_ptr   = SDL_Window*;
-using window_t     = SDL_Window;
+using renderer_t   =  SDL_Renderer;
+using texture_ptr  =  SDL_Texture*;
+using texture_t    =   SDL_Texture;
 
-    renderer_ptr renderer_ = nullptr;
+    renderer_ptr                renderer_ = nullptr;
+    Window                                 &window_;
 
 public:
 
-    Renderer() {}
-
-    Renderer(window_ptr window, int index, uint32_t flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC)
+    Renderer(Window& window, int index, uint32_t flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC) :
+            window_{window}
     {
-        renderer_ = SDL_CreateRenderer(window, index, flags);
+        renderer_ = SDL_CreateRenderer(window_.get_window_ptr(), index, flags);
         if (renderer_ == NULL)
             Custom_Exceptions::Create_Render_Exception{SDL_GetError()};
     }
 
-    //  To avoid double SDL_DestroyWindow()
     Renderer(const Renderer &rhs) = delete;
+    Renderer &operator=(const Renderer &rhs) = delete;
 
-    Renderer(Renderer&& rhs) noexcept : renderer_{std::exchange(rhs.renderer_, nullptr)} {}
-
-    Renderer& operator= (Renderer&& rhs)
-    {
-        std::swap(renderer_, rhs.renderer_);
-
-        return *this;
-    }
+    Renderer(Renderer &&rhs) = delete;
+    Renderer &operator=(Renderer &&rhs) = delete;
 
     ~Renderer () 
     {
         if (renderer_ != NULL)
             SDL_DestroyRenderer(renderer_);
     }
+
+    renderer_ptr get() { return renderer_; }
 
     void set_renderer_draw_color (uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)
     {
@@ -83,9 +79,10 @@ public:
             Custom_Exceptions::Render_Clear_Exception{SDL_GetError()};
     }
 
-    void render_present ()  { SDL_RenderPresent(renderer_); }
+    void render_present ()  
+    {
+        SDL_RenderPresent(renderer_);
+    }
 };
-
-}
 
 #endif

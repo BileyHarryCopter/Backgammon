@@ -1,7 +1,9 @@
 #ifndef MAINLOOP_HPP
 #define MAINLOOP_HPP
 
+#include <map>
 #include <vector>
+#include <string>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -12,9 +14,6 @@
 #include "Window.hpp"
 #include "Renderer.hpp"
 #include "Texture.hpp"
-
-namespace Backgammon
-{
 
 namespace Custom_Exceptions
 {
@@ -37,38 +36,57 @@ namespace Custom_Exceptions
     };
 }
 
+namespace SDLMainloop
+{
+
+struct SDL
+{
+    SDL() 
+    {
+        if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
+            Custom_Exceptions::SDL_Init_Exception{SDL_GetError()};
+    }
+    ~SDL() { SDL_Quit(); }
+};
+
 class Mainloop
 {
 
 using music_ptr = Mix_Music *;
+using renderer_ptr = SDL_Renderer *;
 
-    music_ptr            music_    = nullptr;
+music_ptr music_ = nullptr;
+
 #ifdef FONTS_SUPPORT
     TTF_Font*            mFont     = nullptr;
 #endif
-    Window               mWindow;
-    Renderer             mRenderer;
-#ifdef TEXTURES_SUPPORT  
-    std::vector<Texture> mTextures;
-#endif
+
+    SDL                                             sdl_;
+    Window                                       window_;
+    Renderer                                   renderer_;
+    std::map<std::string, SDLTexture::Texture> textures_;
 
 public:
-    Mainloop() {}
 
-    ~Mainloop() {}
+    Mainloop();
 
-    //  Initializes SDL and creates a window
-    bool init();
+    ~Mainloop();
 
-    //  Loads audio files and images
+    //  Loads audio files and textures
     bool loadmedia();
 
-    //  Cleans media and shuts down SDL
-    void close();
-
     //  Clear and present renderer
-    void clear_renderer()   { mRenderer.render_clear(); }
-    void present_renderer() { mRenderer.render_present(); }
+    void clear_renderer()   { renderer_.render_clear(); }
+    void present_renderer() { renderer_.render_present(); }
+    renderer_ptr get_renderer() { renderer_.get(); }
+
+    void draw_texture(const std::string& id,int x, int y, size_t width, size_t height,
+                                            SDL_RendererFlip flip, renderer_ptr renderer);
+                                        
+
+private:
+
+    SDLTexture::Texture &get_texture(const std::string &id) { return textures_[id]; }
 
 }; //   end of Mainloop's class
 
@@ -78,3 +96,4 @@ void run_backgammon();
 }
 
 #endif
+

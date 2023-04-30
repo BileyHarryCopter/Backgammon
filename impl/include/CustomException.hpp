@@ -7,9 +7,9 @@
 namespace Custom_Exceptions
 {
 
-    struct Print_Exception : public std::runtime_error
+    struct Base_Exception : public std::runtime_error
     {
-        Print_Exception(const std::string& msg) : std::runtime_error(msg.data()){}
+        Base_Exception(const std::string& msg) : std::runtime_error(msg.data()){}
     };
     
 }

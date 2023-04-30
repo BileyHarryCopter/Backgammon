@@ -9,16 +9,15 @@ Texture::Texture (const std::string& path, renderer_ptr renderer, int x, int y) 
     SDL_Surface* loadedSurface = IMG_Load(path.c_str());
 
     if (loadedSurface == nullptr) {
-        Custom_Exceptions::IMG_Load_Exception{SDL_GetError()};
-        std::cout << "Failure to load image! " << SDL_GetError() << std::endl;
+        throw Custom_Exceptions::IMG_Load_Exception{SDL_GetError()};
     }
 
     else {
+
         texture_ = SDL_CreateTextureFromSurface(renderer, loadedSurface);
 
         if(texture_ == nullptr) {
-            Custom_Exceptions::SDL_CreateTextureFromSurface_Exception{SDL_GetError()};
-            std::cout << "Failure to create texture from surface! " << SDL_GetError() << std::endl;
+            throw Custom_Exceptions::SDL_CreateTextureFromSurface_Exception{SDL_GetError()};
         }
 
         else {
@@ -36,24 +35,20 @@ Texture::Texture (const std::string& path, renderer_ptr renderer, int x, int y) 
 Texture::~Texture() {
     if(texture_ != nullptr)
         SDL_DestroyTexture(texture_);
-    else
-        Custom_Exceptions::SDL_DistructTexture_Exception{SDL_GetError()};
 }
 
 Texture::Texture (const Texture& rhs) {
     SDL_Surface* loadedSurface = IMG_Load(rhs.path_.c_str());
 
     if (loadedSurface == nullptr) {
-        Custom_Exceptions::IMG_Load_Exception{SDL_GetError()};
-        std::cout << "Failure to load image! " << SDL_GetError() << std::endl;
+        throw Custom_Exceptions::IMG_Load_Exception{SDL_GetError()};
     }
 
     else {
         texture_ = SDL_CreateTextureFromSurface(rhs.renderer_, loadedSurface);
 
         if(texture_ == nullptr) {
-            Custom_Exceptions::SDL_CreateTextureFromSurface_Exception{SDL_GetError()};
-            std::cout << "Failure to create texture from surface! " << SDL_GetError() << std::endl;
+            throw Custom_Exceptions::SDL_CreateTextureFromSurface_Exception{SDL_GetError()};
         }
 
         else {
@@ -75,9 +70,14 @@ void Texture::simple_dump() {
               << std::endl;
 }
 
-void Texture::move (point_t dst) {
+void Texture::set_pos (point_t dst) {
     pos_.x = dst.x;
     pos_.y = dst.y;
+}
+
+void Texture::set_demension (int width, int height) {
+    w = width;
+    h = height;
 }
 
 void Texture::move (int delta_x, int delta_y) {
@@ -85,28 +85,26 @@ void Texture::move (int delta_x, int delta_y) {
     pos_.y += delta_y;
 } 
 
-void Texture::draw (int x, int y, size_t width, size_t height, 
-                    SDL_RendererFlip flip, renderer_ptr renderer)
+void Texture::draw (SDL_RendererFlip flip)
 {
     if (texture_ == nullptr)
-        Custom_Exceptions::SDL_RenderCopyEx{SDL_GetError()};
+        throw Custom_Exceptions::SDL_RenderCopyEx{SDL_GetError()};
 
-    SDL_Rect src_rect {0, 0, width, height};
-    SDL_Rect dst_rect {x, y, width, height};
+    SDL_Rect src_rect {0, 0, w, h};
+    SDL_Rect dst_rect {pos_.x, pos_.y, w, h};
 
-    SDL_RenderCopyEx(renderer, texture_, &src_rect, &dst_rect, 0, nullptr, flip);
+    SDL_RenderCopyEx(renderer_, texture_, &src_rect, &dst_rect, 0, nullptr, flip);
 }
 
-void Texture::drawframe(int x, int y, size_t width, size_t height, 
-                        int row, int frame, SDL_RendererFlip flip, renderer_ptr renderer)
+void Texture::drawframe(int row, int frame, SDL_RendererFlip flip)
 {
     if (texture_ == nullptr)
-        Custom_Exceptions::SDL_RenderCopyEx{SDL_GetError()};
+        throw Custom_Exceptions::SDL_RenderCopyEx{SDL_GetError()};
 
-    SDL_Rect src_rect {width * frame, height * row, width, height};
-    SDL_Rect dst_rect {x, y, width, height};
+    SDL_Rect src_rect {w * frame, h * row, w, h};
+    SDL_Rect dst_rect {pos_.x, pos_.y, w, h};
 
-    SDL_RenderCopyEx(renderer, texture_, &src_rect, &dst_rect, 0, nullptr, flip);
+    SDL_RenderCopyEx(renderer_, texture_, &src_rect, &dst_rect, 0, nullptr, flip);
 }
 
 }

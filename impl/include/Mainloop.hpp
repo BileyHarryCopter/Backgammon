@@ -17,22 +17,22 @@
 
 namespace Custom_Exceptions
 {
-    struct SDL_Init_Exception : public Print_Exception
+    struct SDL_Init_Exception : public Base_Exception
     {
         SDL_Init_Exception(const std::string& error_msg) :
-            Print_Exception("Failure of initialization of SDL Library with error: " + error_msg) {}
+            Base_Exception("Failure of initialization of SDL Library with error: " + error_msg) {}
     };
 
-    struct IMG_Init_Exception : public Print_Exception
+    struct IMG_Init_Exception : public Base_Exception
     {
         IMG_Init_Exception(const std::string& error_msg) :
-            Print_Exception("Failure with initialization of SDL_image: " + error_msg) {}
+            Base_Exception("Failure with initialization of SDL_image: " + error_msg) {}
     };
 
-    struct Mix_OpenAudio_Exception : public Print_Exception
+    struct Mix_OpenAudio_Exception : public Base_Exception
     {
         Mix_OpenAudio_Exception(const std::string& error_msg) :
-            Print_Exception("Failure with initialization of SDL_mixer: " + error_msg) {}
+            Base_Exception("Failure with initialization of SDL_mixer: " + error_msg) {}
     };
 }
 
@@ -80,8 +80,13 @@ public:
     void present_renderer() { renderer_.render_present(); }
     renderer_ptr get_renderer() { return renderer_.get(); }
 
-    void draw_texture(const std::string& id,int x, int y, size_t width, size_t height,
-                                            SDL_RendererFlip flip, renderer_ptr renderer);
+    void set_pos_texture       (const std::string& id, int x, int y);
+    void set_demension_texture (const std::string& id, int width, int height);
+
+    void move_texture          (const std::string& id, int delta_x, int delta_y);
+
+    void draw_texture          (const std::string& id, SDL_RendererFlip flip);
+    void draw_frame_texture    (const std::string& id, int row, int frame, SDL_RendererFlip flip);
                                         
 
 private:

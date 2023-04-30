@@ -11,10 +11,10 @@ static const char *error = SDL_GetError();
 
 namespace Custom_Exceptions
 {
-    struct Create_Window_Exception : public Print_Exception
+    struct Create_Window_Exception : public Base_Exception
     {
         Create_Window_Exception(const std::string& error_msg) :
-                Print_Exception("Failure of creation the window with error: " + error_msg) {}
+                Base_Exception("Failure of creation the window with error: " + error_msg) {}
     };
 }
 

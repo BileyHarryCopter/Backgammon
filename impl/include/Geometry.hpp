@@ -5,10 +5,10 @@
 
 namespace Custom_Exceptions
 {
-    struct Devision_On_Zero : public Print_Exception
+    struct Devision_On_Zero : public Base_Exception
     {
         Devision_On_Zero() : 
-            Print_Exception("Devision on zero") {}
+            Base_Exception("Devision on zero") {}
     };
 }
 

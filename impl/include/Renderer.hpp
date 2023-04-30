@@ -11,22 +11,22 @@
 
 namespace Custom_Exceptions
 {
-    struct Create_Render_Exception : public Print_Exception
+    struct Create_Render_Exception : public Base_Exception
     {
         Create_Render_Exception(const std::string &error_msg) : 
-                Print_Exception("Failure with creation the renderer with error: " + error_msg) {}
+                Base_Exception("Failure with creation the renderer with error: " + error_msg) {}
     };
 
-    struct Set_Render_DrawColor_Exception : public Print_Exception
+    struct Set_Render_DrawColor_Exception : public Base_Exception
     {
         Set_Render_DrawColor_Exception(const std::string &error_msg) : 
-                       Print_Exception("Failure with setting a draw color for rendering with error: " + error_msg) {}
+                       Base_Exception("Failure with setting a draw color for rendering with error: " + error_msg) {}
     };
 
-    struct Render_Clear_Exception : public Print_Exception
+    struct Render_Clear_Exception : public Base_Exception
     {
         Render_Clear_Exception(const std::string &error_msg) :
-               Print_Exception("Failure with clear renderer with error: " + error_msg) {}
+               Base_Exception("Failure with clear renderer with error: " + error_msg) {}
     };
 }
 

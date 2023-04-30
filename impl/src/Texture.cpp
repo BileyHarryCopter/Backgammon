@@ -1,14 +1,17 @@
 #include "Texture.hpp"
 
+#include <iostream>
+
 namespace SDLTexture
 {
 
-Texture::Texture (std::string& path, renderer_ptr renderer, int x, int y) : pos{x, y} {
+Texture::Texture (std::string& path, renderer_ptr renderer, int x, int y) {
 
     SDL_Surface* loadedSurface = IMG_Load(path.c_str());
 
     if (loadedSurface == nullptr) {
         Custom_Exceptions::IMG_Load_Exception{SDL_GetError()};
+        std::cout << "Failure to load image! " << SDL_GetError() << std::endl;
     }
 
     else {
@@ -16,20 +19,13 @@ Texture::Texture (std::string& path, renderer_ptr renderer, int x, int y) : pos{
 
         if(texture_ == nullptr) {
             Custom_Exceptions::SDL_CreateTextureFromSurface_Exception{SDL_GetError()};
+            std::cout << "Failure to create texture from surface! " << SDL_GetError() << std::endl;
         }
 
         else {
-            int w_cpy, h_cpy;
-            SDL_QueryTexture(texture_, nullptr, nullptr, &w_cpy, &h_cpy);
-
-            if (w_cpy >= 0 && h_cpy >=0) {
-                w = static_cast<size_t> (w_cpy);
-                h = static_cast<size_t> (h_cpy);
-            }
-
-            else {
-                Custom_Exceptions::SDL_CreateTextureFromSurface_Exception{SDL_GetError()};
-            }
+            SDL_QueryTexture(texture_, nullptr, nullptr, &w, &h);
+            pos.x = x;
+            pos.y = y;
         }
 
         SDL_FreeSurface( loadedSurface );
@@ -41,6 +37,13 @@ Texture::~Texture() {
         SDL_DestroyTexture(texture_);
     else
         Custom_Exceptions::SDL_DistructTexture_Exception{SDL_GetError()};
+}
+
+void Texture::simple_dump() {
+    std::cout << "Texture addr = " << texture_ << "\n" 
+              << "Pos = (" << pos.x << ", " << pos.y << ")\n" 
+              << "H = " << h << ", W = " << w << "\n" 
+              << std::endl;
 }
 
 void Texture::move (point_t dst) {

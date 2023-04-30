@@ -36,8 +36,9 @@ Mainloop::~Mainloop()
 
 bool Mainloop::loadmedia()
 {
-    std::string path {"./assets/board_test.jpg"};
+    std::string path {"../../impl/assets/board_test.jpg"};
     SDLTexture::Texture texture (path, renderer_.get());
+    texture.simple_dump();
 
     textures_.insert({"board_test", texture});
 
@@ -72,7 +73,7 @@ void run_backgammon()
         //  Clear screen
         mainloop.clear_renderer();
 
-        mainloop.draw_texture("board_test", 100, 100, 200, 300, SDL_FLIP_NONE, mainloop.get_renderer());
+        mainloop.draw_texture("board_test", 0, 0, 470, 626, SDL_FLIP_NONE, mainloop.get_renderer());
 
         //  Update screen
         mainloop.present_renderer();

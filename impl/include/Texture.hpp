@@ -25,7 +25,7 @@ namespace Custom_Exceptions
     struct SDL_RenderCopyEx : public Print_Exception
     {
         SDL_RenderCopyEx(const std::string& error_msg) :
-            Print_Exception("Attempt to render unexisting texture: ") {}
+            Print_Exception("Attempt to render unexisting texture: " + error_msg) {}
     };
 
     struct SDL_DistructTexture_Exception : public Print_Exception {
@@ -40,7 +40,6 @@ namespace SDLTexture
 using renderer_ptr = SDL_Renderer*;
 using texture_ptr  =  SDL_Texture*;
 using texture_t    =   SDL_Texture;
-using size_t       =   std::size_t;
 using point_t      =     SDL_Point;
 
 
@@ -50,13 +49,14 @@ class Texture {
     private:
         texture_ptr texture_ = nullptr;
         point_t pos;
-        size_t h = 0;                   
-        size_t w = 0;                  
+        int h = 0;                   
+        int w = 0;                  
     
     public:
-        Texture  (std::string& path, renderer_ptr renderer,
-            int x = SDL_WINDOWPOS_CENTERED, int y = SDL_WINDOWPOS_CENTERED);
+        Texture  (std::string& path, renderer_ptr renderer, int x = 0, int y = 0);
         ~Texture ();
+
+        void simple_dump();
 
         void move (point_t dst);
         void move (int delta_x, int delta_y);  

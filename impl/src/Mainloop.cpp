@@ -9,7 +9,7 @@ Mainloop::Mainloop() :
     //  SDL initialization
     sdl_{},
     //  Create window
-    window_{"Really Armenian Backgammon",   SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+    window_{"Really Armenian Backgammon", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                         SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE},
     //  Create renderer
     renderer_{window_,  FIRST_SUITABLE, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC}
@@ -61,9 +61,9 @@ void run_backgammon()
 
     SDL_Event event;
 
-    for (; !quit;)
+    while (!quit)
     {
-        for (; SDL_PollEvent(&event) != 0 ;)
+        while (SDL_PollEvent(&event) != 0)
         {
             //User requests quit
             if( event.type == SDL_QUIT )
@@ -73,7 +73,7 @@ void run_backgammon()
         //  Clear screen
         mainloop.clear_renderer();
 
-        mainloop.draw_texture("board_test", 0, 0, 470, 626, SDL_FLIP_NONE, mainloop.get_renderer());
+        mainloop.draw_texture("board_test", 0, 0, 626, 470, SDL_FLIP_NONE, mainloop.get_renderer());
 
         //  Update screen
         mainloop.present_renderer();

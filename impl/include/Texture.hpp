@@ -41,20 +41,23 @@ using renderer_ptr = SDL_Renderer*;
 using texture_ptr  =  SDL_Texture*;
 using texture_t    =   SDL_Texture;
 using point_t      =     SDL_Point;
+using str_t        =   std::string;
 
 
 
 class Texture {
-
-    private:
+        renderer_ptr renderer_;
+        str_t path_;
         texture_ptr texture_ = nullptr;
-        point_t pos;
-        int h = 0;                   
-        int w = 0;                  
+        point_t pos_;               
+        int w = 0;   
+        int h = 0;               
     
     public:
-        Texture  (std::string& path, renderer_ptr renderer, int x = 0, int y = 0);
+        Texture  (const std::string& path, renderer_ptr renderer, int x = 0, int y = 0);
         ~Texture ();
+
+        Texture (const Texture& rhs);
 
         void simple_dump();
 

@@ -5,8 +5,7 @@
 namespace SDLTexture
 {
 
-Texture::Texture (std::string& path, renderer_ptr renderer, int x, int y) {
-
+Texture::Texture (const std::string& path, renderer_ptr renderer, int x, int y) {
     SDL_Surface* loadedSurface = IMG_Load(path.c_str());
 
     if (loadedSurface == nullptr) {
@@ -24,8 +23,10 @@ Texture::Texture (std::string& path, renderer_ptr renderer, int x, int y) {
 
         else {
             SDL_QueryTexture(texture_, nullptr, nullptr, &w, &h);
-            pos.x = x;
-            pos.y = y;
+            pos_.x    = x;
+            pos_.y    = y;
+            path_     = path;
+            renderer_ = renderer;
         }
 
         SDL_FreeSurface( loadedSurface );
@@ -39,21 +40,49 @@ Texture::~Texture() {
         Custom_Exceptions::SDL_DistructTexture_Exception{SDL_GetError()};
 }
 
+Texture::Texture (const Texture& rhs) {
+    SDL_Surface* loadedSurface = IMG_Load(rhs.path_.c_str());
+
+    if (loadedSurface == nullptr) {
+        Custom_Exceptions::IMG_Load_Exception{SDL_GetError()};
+        std::cout << "Failure to load image! " << SDL_GetError() << std::endl;
+    }
+
+    else {
+        texture_ = SDL_CreateTextureFromSurface(rhs.renderer_, loadedSurface);
+
+        if(texture_ == nullptr) {
+            Custom_Exceptions::SDL_CreateTextureFromSurface_Exception{SDL_GetError()};
+            std::cout << "Failure to create texture from surface! " << SDL_GetError() << std::endl;
+        }
+
+        else {
+            SDL_QueryTexture(texture_, nullptr, nullptr, &w, &h);
+            pos_.x    = rhs.pos_.x;
+            pos_.y    = rhs.pos_.y;
+            path_     = rhs.path_;
+            renderer_ = rhs.renderer_;
+        }
+
+        SDL_FreeSurface( loadedSurface );
+    }
+}
+
 void Texture::simple_dump() {
     std::cout << "Texture addr = " << texture_ << "\n" 
-              << "Pos = (" << pos.x << ", " << pos.y << ")\n" 
+              << "Pos = (" << pos_.x << ", " << pos_.y << ")\n" 
               << "H = " << h << ", W = " << w << "\n" 
               << std::endl;
 }
 
 void Texture::move (point_t dst) {
-    pos.x = dst.x;
-    pos.y = dst.y;
+    pos_.x = dst.x;
+    pos_.y = dst.y;
 }
 
 void Texture::move (int delta_x, int delta_y) {
-    pos.x += delta_x;
-    pos.y += delta_y;
+    pos_.x += delta_x;
+    pos_.y += delta_y;
 } 
 
 void Texture::draw (int x, int y, size_t width, size_t height, 

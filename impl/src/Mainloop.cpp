@@ -36,12 +36,19 @@ Mainloop::~Mainloop()
 
 bool Mainloop::loadmedia()
 {
-    SDLTexture::Texture board ("../../impl/assets/board_test.png",    renderer_.get(), 0, 0);
-    SDLTexture::Texture bf_1  ("../../impl/assets/black_feature.png", renderer_.get(), 140, 800);
+    SDLTexture::Texture board ("../../impl/assets/board_test.png", renderer_.get());
+
+    SDLTexture::Texture bf_1_text ("../../impl/assets/black_feature.png", renderer_.get());
+
+    SDLFeature::Feature bf_1 (bf_1_text, SDLFeature::BLACK);
+ 
+    field_.push(bf_1);
+
+    field_.move_feature(0, 1);
 
     textures_.insert({"board", board});
-    textures_.insert({"bf_1" , bf_1 });
 
+    
 
     return true;
 }
@@ -58,13 +65,13 @@ void Mainloop::move_texture(const std::string& id, int delta_x, int delta_y) {
     get_texture(id).move(delta_x, delta_y);
 }
 
-void Mainloop::draw_texture(const std::string& id, SDL_RendererFlip flip)
+void Mainloop::draw_texture(const std::string& id)
 {
-    get_texture(id).draw(flip);
+    get_texture(id).draw();
 }
 
-void Mainloop::draw_frame_texture(const std::string& id, int row, int frame, SDL_RendererFlip flip) {
-    get_texture(id).drawframe(row, frame, flip);
+void Mainloop::draw_frame_texture(const std::string& id, int row, int frame) {
+    get_texture(id).drawframe(row, frame);
 }
 
 void run_backgammon()
@@ -89,9 +96,8 @@ void run_backgammon()
         //  Clear screen
         mainloop.clear_renderer();
 
-        mainloop.draw_texture("board", SDL_FLIP_NONE);
-        mainloop.draw_texture("bf_1" , SDL_FLIP_NONE);
-
+        mainloop.draw_texture("board");
+        mainloop.draw_field();
 
         //  Update screen
         mainloop.present_renderer();

@@ -2,7 +2,8 @@
 #define FIGURE_HPP
 
 #include "GameObject.hpp"
-#include "Texture.hpp"
+
+using texture = SDLTexture::Texture;
 
 namespace SDLFeature
 {
@@ -11,8 +12,6 @@ enum Colour {
     BLACK = 1,
     WHITE = 0
 };
-
-using texture = SDLTexture::Texture;
 
 class Feature final : public SDLGameObject::GameObject
 {

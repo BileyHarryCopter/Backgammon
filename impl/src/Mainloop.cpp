@@ -5,17 +5,20 @@
 namespace SDLMainloop
 {
 
-Mainloop::Mainloop() :
-    //  SDL initialization
-    sdl_{},
-    //  Create window
-    window_{"Really Armenian Backgammon", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                                        SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE},
-    //  Create renderer
-    renderer_{window_,  FIRST_SUITABLE, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC}, main_menu_{}
-{
-    //  Set color of background
-    renderer_.set_renderer_draw_color(255, 255, 255, 255);
+//----------
+// Creation
+//----------
+    Mainloop::Mainloop() :
+        //  SDL initialization
+        sdl_{},
+        //  Create window
+        window_{"Really Armenian Backgammon", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                                            SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE},
+        //  Create renderer
+        renderer_{window_,  FIRST_SUITABLE, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC}
+    {
+        //  Set color of background
+        renderer_.set_renderer_draw_color(0, 0, 0, 255);
 
     //  Initialize PNG loading
     int png_flags = IMG_INIT_PNG;
@@ -34,17 +37,35 @@ Mainloop::~Mainloop()
     IMG_Quit();
 }
 
-bool Mainloop::loadmedia()
-{
-    SDLTexture::Texture board ("../../impl/assets/board_test.png",    renderer_.get(), 0, 0);
-    SDLTexture::Texture bf_1  ("../../impl/assets/black_feature.png", renderer_.get(), 140, 800);
+    bool Mainloop::loadmedia()
+    {
+        SDLTexture::Texture board ("../../impl/assets/board_test.png", renderer_.get());
+        textures_.insert({"board", board});
 
-    textures_.insert({"board", board});
+        std::vector <SDLTexture::Texture> bf_textures;
+        std::vector <SDLFeature::Feature> bfs;
+        for (size_t i = 0; i < 15; ++i) {
+            bf_textures.push_back({"../../impl/assets/black_feature.png", renderer_.get()});
 
-    
+            bfs.push_back({bf_textures[i], SDLFeature::BLACK});
 
-    return true;
-}
+            field_.push(bfs[i], 12);
+        }
+
+        std::vector <SDLTexture::Texture> wf_textures;
+        std::vector <SDLFeature::Feature> wfs;
+        for (size_t i = 0; i < 15; ++i) {
+            wf_textures.push_back({"../../impl/assets/white_feature.png", renderer_.get()});
+
+            wfs.push_back({wf_textures[i], SDLFeature::WHITE});
+
+            field_.push(wfs[i], 11);
+        }
+
+        field_.dump();
+
+        return true;
+    }
 
 void Mainloop::set_pos_texture(const std::string& id, int x, int y) {
     get_texture(id).set_pos({x, y});
@@ -73,39 +94,37 @@ void Mainloop::update(bool *quit_status)
         *quit_status = true;
 }
 
-void run_backgammon()
-{
-    Mainloop mainloop {};
-
-    mainloop.loadmedia();
-
-    bool quit = false;
-
-    SDL_Event event;
-
-    while (!quit)
+//--------------
+// Running loop
+//--------------
+    void run_backgammon()
     {
-        while (SDL_PollEvent(&event) != 0)
+        Mainloop mainloop {};
+
+        mainloop.loadmedia();
+
+        bool quit = false;
+
+        SDL_Event event;
+
+        while (!quit)
         {
-            //User requests quit
-            if( event.type == SDL_QUIT )
-                quit = true;
+            while (SDL_PollEvent(&event) != 0)
+            {
+                //User requests quit
+                if( event.type == SDL_QUIT )
+                    quit = true;
+            }
 
-            mainloop.handle_event(&event);
-            mainloop.update(&quit);
+            //  Clear screen
+            mainloop.clear_renderer();
+
+            mainloop.draw_texture("board");
+
+            mainloop.draw_field();            
+
+            //  Update screen
+            mainloop.present_renderer();
         }
-
-        //  Clear screen
-        mainloop.clear_renderer();
-
-        mainloop.draw_texture("board");
-        mainloop.draw_field();
-        mainloop.draw_scene();
-
-        //  Update screen
-        mainloop.present_renderer();
     }
-
-}
-
 }

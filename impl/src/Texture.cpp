@@ -1,7 +1,5 @@
 #include "Texture.hpp"
 
-#include <iostream>
-
 namespace SDLTexture
 {
 

@@ -3,14 +3,13 @@
 
 #include <string>
 #include <SDL2/SDL.h>
-
-
 #include <iostream>
-
-
 
 #include "CustomException.hpp"
 #include "Texture.hpp"
+
+using texture = SDLTexture::Texture;
+using point_t = SDL_Point;
 
 namespace SDLGameObject
 {
@@ -19,10 +18,6 @@ enum Activity {
     ACTIVE     = 1,
     NON_ACTIVE = 0
 };
-
-using texture = SDLTexture::Texture;
-using point_t = SDL_Point;
-
 
 class GameObject
 {
@@ -35,13 +30,9 @@ public:
 
     GameObject (const GameObject& rhs) : texture_(rhs.texture_), activity_(rhs.activity_) { }
 
-    void set_texture_pos (point_t new_pos) {
-        texture_.set_pos(new_pos);
-    }
+    void set_texture_pos (point_t new_pos) { texture_.set_pos(new_pos); }
 
-    void draw () {
-        texture_.draw();
-    }
+    void draw () { texture_.draw(); }
 
     void dump () {
         texture_.simple_dump();

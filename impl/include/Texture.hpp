@@ -4,8 +4,15 @@
 #include <string>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <iostream>
 
 #include "Window.hpp"
+
+using renderer_ptr = SDL_Renderer*;
+using texture_ptr  =  SDL_Texture*;
+using texture_t    =   SDL_Texture;
+using point_t      =     SDL_Point;
+using str_t        =   std::string;
 
 namespace Custom_Exceptions
 {
@@ -33,13 +40,6 @@ namespace Custom_Exceptions
 namespace SDLTexture
 {
 
-using renderer_ptr = SDL_Renderer*;
-using texture_ptr  =  SDL_Texture*;
-using texture_t    =   SDL_Texture;
-using point_t      =     SDL_Point;
-using str_t        =   std::string;
-
-
 class Texture {
         renderer_ptr renderer_;
         str_t        path_;
@@ -54,6 +54,8 @@ class Texture {
         ~Texture ();
 
         Texture (const Texture& rhs);
+        Texture () : renderer_ (nullptr), path_   ("NO_PATH"),
+                     texture_  (nullptr), pos_    ({0 ,0}) {}
 
         void simple_dump();
 
@@ -63,9 +65,7 @@ class Texture {
         void move (int delta_x, int delta_y);  
 
         void draw ();
-        void drawframe(int row, int frame);
-
-        
+        void drawframe(int row, int frame);      
 };
 
 }

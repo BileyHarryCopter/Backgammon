@@ -4,11 +4,11 @@
 #include <map>
 #include <vector>
 #include <string>
-
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_ttf.h>
+#include <unistd.h>
 
 #include "CustomException.hpp"
 #include "Window.hpp"
@@ -16,6 +16,11 @@
 #include "Texture.hpp"
 #include "Feature.hpp"
 #include "Field.hpp"
+
+using size_t         = std::size_t;
+using music_ptr      = Mix_Music *;
+using renderer_ptr   = SDL_Renderer *;
+using texture_map_t  = std::map<std::string, SDLTexture::Texture>;
 
 namespace Custom_Exceptions
 {
@@ -41,49 +46,38 @@ namespace Custom_Exceptions
 namespace SDLMainloop
 {
 
-struct SDL
-{
-    SDL() 
-    {
+struct SDL {
+    SDL() {
         if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
             Custom_Exceptions::SDL_Init_Exception{SDL_GetError()};
     }
+
     ~SDL() { SDL_Quit(); }
 };
 
-class Mainloop
-{
-
-using music_ptr = Mix_Music *;
-using renderer_ptr = SDL_Renderer *;
-
-music_ptr music_ = nullptr;
-
-#ifdef FONTS_SUPPORT
-    TTF_Font*            mFont     = nullptr;
-#endif
-
-    SDL                                               sdl_;
-    Window                                         window_;
-    Renderer                                     renderer_;
-    SDLField::Field                                 field_;
-    std::map<std::string, SDLTexture::Texture>   textures_;
-    
-
+class Mainloop {
+    music_ptr       music_ = nullptr;
+    SDL             sdl_;
+    Window          window_;
+    Renderer        renderer_;
+    SDLField::Field field_;
+    texture_map_t   textures_;
 
 public:
+    //----------
+    // Creation
+    //----------
+        Mainloop();
+        ~Mainloop();
 
-    Mainloop();
+        bool loadmedia();
 
-    ~Mainloop();
-
-    //  Loads audio files and textures
-    bool loadmedia();
-
-    //  Clear and present renderer
-    void clear_renderer()   { renderer_.render_clear(); }
-    void present_renderer() { renderer_.render_present(); }
-    renderer_ptr get_renderer() { return renderer_.get(); }
+    //--------------------
+    // Work with Renderer
+    //--------------------
+        void clear_renderer()   { renderer_.render_clear(); }
+        void present_renderer() { renderer_.render_present(); }
+        renderer_ptr get_renderer() { return renderer_.get(); }
 
     //--------------------
     // Work with textures
@@ -99,17 +93,19 @@ public:
     //-----------------
     // Work with field
     //-----------------
-        void draw_field () { field_.draw_all(); }
+        void draw_field   ()                          { field_.draw_all(); }
+        void move_feature (size_t cell, size_t steps) { field_.move_feature(cell, steps); }
                                         
 
 private:
-
     SDLTexture::Texture& get_texture(const std::string &id) { return textures_.at(id); }
 
-}; //   end of Mainloop's class
+};
 
-//  Creates an object of mainloop and runs the game
-void run_backgammon();
+//--------------
+// Running loop
+//--------------
+    void run_backgammon();
 
 }
 

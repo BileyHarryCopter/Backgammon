@@ -14,6 +14,7 @@
 #include "Window.hpp"
 #include "Renderer.hpp"
 #include "Texture.hpp"
+#include "Menu.hpp"
 
 namespace Custom_Exceptions
 {
@@ -66,6 +67,8 @@ music_ptr music_ = nullptr;
     Renderer                                   renderer_;
     std::map<std::string, SDLTexture::Texture> textures_;
 
+    SDLMenu::Menu                             main_menu_;
+
 public:
 
     Mainloop();
@@ -87,7 +90,14 @@ public:
 
     void draw_texture          (const std::string& id, SDL_RendererFlip flip);
     void draw_frame_texture    (const std::string& id, int row, int frame, SDL_RendererFlip flip);
-                                        
+
+
+    //  This should be proccessed on the active scene
+    void handle_event (SDL_Event * event) {main_menu_.handle_event(event);}
+    void draw_scene() { main_menu_.draw(); }
+
+    //  This should be deleted
+    void update(bool *quit_status);
 
 private:
 

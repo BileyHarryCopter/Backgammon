@@ -36,9 +36,12 @@ Mainloop::~Mainloop()
 
 bool Mainloop::loadmedia()
 {
+    SDLTexture::Texture board ("../../impl/assets/board_test.png",    renderer_.get(), 0, 0);
+    SDLTexture::Texture bf_1  ("../../impl/assets/black_feature.png", renderer_.get(), 140, 800);
 
-    //  For the moment before json
-    main_menu_.loadmedia(renderer_.get());
+    textures_.insert({"board", board});
+
+    
 
     return true;
 }
@@ -55,13 +58,13 @@ void Mainloop::move_texture(const std::string& id, int delta_x, int delta_y) {
     get_texture(id).move(delta_x, delta_y);
 }
 
-void Mainloop::draw_texture(const std::string& id, SDL_RendererFlip flip)
+void Mainloop::draw_texture(const std::string& id)
 {
-    get_texture(id).draw(flip);
+    get_texture(id).draw();
 }
 
-void Mainloop::draw_frame_texture(const std::string& id, int row, int frame, SDL_RendererFlip flip) {
-    get_texture(id).drawframe(row, frame, flip);
+void Mainloop::draw_frame_texture(const std::string& id, int row, int frame) {
+    get_texture(id).drawframe(row, frame);
 }
 
 void Mainloop::update(bool *quit_status)
@@ -95,10 +98,9 @@ void run_backgammon()
         //  Clear screen
         mainloop.clear_renderer();
 
+        mainloop.draw_texture("board");
+        mainloop.draw_field();
         mainloop.draw_scene();
-
-        // mainloop.draw_texture("board", SDL_FLIP_NONE);
-        // mainloop.draw_texture("bf_1" , SDL_FLIP_NONE);
 
         //  Update screen
         mainloop.present_renderer();

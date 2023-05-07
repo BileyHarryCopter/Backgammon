@@ -40,7 +40,6 @@ using point_t      =     SDL_Point;
 using str_t        =   std::string;
 
 
-
 class Texture {
         renderer_ptr renderer_;
         str_t        path_;
@@ -63,8 +62,8 @@ class Texture {
 
         void move (int delta_x, int delta_y);  
 
-        void draw (SDL_RendererFlip flip);
-        void drawframe(int row, int frame, SDL_RendererFlip flip);
+        void draw ();
+        void drawframe(int row, int frame);
 
         
 };

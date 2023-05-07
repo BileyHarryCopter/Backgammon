@@ -66,7 +66,7 @@ Texture::Texture (const Texture& rhs) {
 void Texture::simple_dump() {
     std::cout << "Texture addr = " << texture_ << "\n" 
               << "Pos = (" << pos_.x << ", " << pos_.y << ")\n" 
-              << "H = " << h << ", W = " << w << "\n" 
+              << "H = " << h << ", W = " << w
               << std::endl;
 }
 
@@ -85,7 +85,7 @@ void Texture::move (int delta_x, int delta_y) {
     pos_.y += delta_y;
 } 
 
-void Texture::draw (SDL_RendererFlip flip)
+void Texture::draw ()
 {
     if (texture_ == nullptr)
         throw Custom_Exceptions::SDL_RenderCopyEx{SDL_GetError()};
@@ -93,10 +93,10 @@ void Texture::draw (SDL_RendererFlip flip)
     SDL_Rect src_rect {0, 0, w, h};
     SDL_Rect dst_rect {pos_.x, pos_.y, w, h};
 
-    SDL_RenderCopyEx(renderer_, texture_, &src_rect, &dst_rect, 0, nullptr, flip);
+    SDL_RenderCopyEx(renderer_, texture_, &src_rect, &dst_rect, 0, nullptr, SDL_FLIP_NONE);
 }
 
-void Texture::drawframe(int row, int frame, SDL_RendererFlip flip)
+void Texture::drawframe(int row, int frame)
 {
     if (texture_ == nullptr)
         throw Custom_Exceptions::SDL_RenderCopyEx{SDL_GetError()};
@@ -104,7 +104,7 @@ void Texture::drawframe(int row, int frame, SDL_RendererFlip flip)
     SDL_Rect src_rect {w * frame, h * row, w, h};
     SDL_Rect dst_rect {pos_.x, pos_.y, w, h};
 
-    SDL_RenderCopyEx(renderer_, texture_, &src_rect, &dst_rect, 0, nullptr, flip);
+    SDL_RenderCopyEx(renderer_, texture_, &src_rect, &dst_rect, 0, nullptr, SDL_FLIP_NONE);
 }
 
 }

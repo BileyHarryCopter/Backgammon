@@ -15,6 +15,8 @@
 #include "Window.hpp"
 #include "Renderer.hpp"
 #include "Texture.hpp"
+#include "Feature.hpp"
+#include "Field.hpp"
 #include "Menu.hpp"
 
 namespace Custom_Exceptions
@@ -63,10 +65,16 @@ music_ptr music_ = nullptr;
     TTF_Font*            mFont     = nullptr;
 #endif
 
-    SDL                                             sdl_;
-    Window                                       window_;
-    Renderer                                   renderer_;
-    std::map<std::string, SDLTexture::Texture> textures_;
+    SDL                                               sdl_;
+    Window                                         window_;
+    Renderer                                     renderer_;
+    SDLField::Field                                 field_;
+    std::map<std::string, SDLTexture::Texture>   textures_;
+    
+
+
+    SDLMenu::Menu                             main_menu_;
+    std::stack<SDLScene::Scene>                  scenes_;
 
     SDLMenu::Menu                             main_menu_;
     std::stack<SDLScene::Scene>                  scenes_;
@@ -85,14 +93,22 @@ public:
     void present_renderer() { renderer_.render_present(); }
     renderer_ptr get_renderer() { return renderer_.get(); }
 
-    void set_pos_texture       (const std::string& id, int x, int y);
-    void set_demension_texture (const std::string& id, int width, int height);
+    //--------------------
+    // Work with textures
+    //--------------------
+        void set_pos_texture       (const std::string& id, int x, int y);
+        void set_demension_texture (const std::string& id, int width, int height);
 
-    void move_texture          (const std::string& id, int delta_x, int delta_y);
+        void move_texture          (const std::string& id, int delta_x, int delta_y);
 
-    void draw_texture          (const std::string& id, SDL_RendererFlip flip);
-    void draw_frame_texture    (const std::string& id, int row, int frame, SDL_RendererFlip flip);
+        void draw_texture          (const std::string& id);
+        void draw_frame_texture    (const std::string& id, int row, int frame);
 
+    //-----------------
+    // Work with field
+    //-----------------
+        void draw_field () { field_.draw_all(); }
+                                        
 
     //  This should be proccessed on the active scene
     void handle_event (SDL_Event * event) {main_menu_.handle_event(event);}

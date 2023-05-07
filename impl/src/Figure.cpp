@@ -1,4 +1,4 @@
-#include "Figure.hpp"
+#include "Feature.hpp"
 
 #ifdef Ivan
 

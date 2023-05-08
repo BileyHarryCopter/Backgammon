@@ -65,7 +65,11 @@ class Texture {
         void move (int delta_x, int delta_y);  
 
         void draw ();
-        void drawframe(int row, int frame);      
+        void drawframe(int row, int frame);   
+
+        int     get_h   () { return h; }
+        int     get_w   () { return w; }
+        point_t get_pos () { return pos_; } 
 };
 
 }

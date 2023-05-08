@@ -28,6 +28,9 @@ using size_t         = std::size_t;
 using music_ptr      = Mix_Music *;
 using renderer_ptr   = SDL_Renderer *;
 using texture_map_t  = std::map<std::string, SDLTexture::Texture>;
+using menu_t         = SDLMenu::Menu;
+using game_t         = SDLGame::Game;
+using scene_stack_t  = SDLScene::Scene;
 
 namespace Custom_Exceptions
 {
@@ -63,18 +66,17 @@ struct SDL {
 };
 
 class Mainloop {
-    music_ptr       music_ = nullptr;
-    SDL             sdl_;
-    Window          window_;
-    Renderer        renderer_;
-
-    SDLMenu::Menu                 menu_;
+    music_ptr     music_ = nullptr;
+    SDL           sdl_;
+    Window        window_;
+    Renderer      renderer_;
+    menu_t        menu_;
     // SDLGame::Game                 game_;
-    std::stack<SDLScene::Scene> scenes_;
+    scene_stack_t scenes_;
 
 public:
 
-    SDLGame::Game                 game_;
+    game_t game_;
 
 //----------
 // Creation
@@ -90,24 +92,7 @@ public:
     void clear_renderer()   { renderer_.render_clear(); }
     void present_renderer() { renderer_.render_present(); }
     renderer_ptr get_renderer() { return renderer_.get(); }
-
-//--------------------
-// Work with textures
-//--------------------
-    void set_pos_texture       (const std::string& id, int x, int y);
-    void set_demension_texture (const std::string& id, int width, int height);
-
-    void move_texture          (const std::string& id, int delta_x, int delta_y);
-
-    void draw_texture          (const std::string& id);
-    void draw_frame_texture    (const std::string& id, int row, int frame);
-
-//-----------------
-// Work with field
-//-----------------
-    // void move_feature (size_t cell, size_t steps) { field_.move_feature(cell, steps); }
-                                        
-
+                        
     //  This should be proccessed on the active scene
     void handle_event (SDL_Event * event) {menu_.handle_event(event);}
     void draw_scene() { menu_.draw(); }

@@ -38,6 +38,10 @@ public:
         texture_.simple_dump();
         std::cout << "Activity = " << activity_ << std::endl;
     }  
+
+    int     get_texture_w   () { return texture_.get_w(); }
+    int     get_texture_h   () { return texture_.get_h(); }
+    point_t get_texture_pos () { return texture_.get_pos(); }
 };
 
 } 

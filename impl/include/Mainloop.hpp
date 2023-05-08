@@ -15,7 +15,6 @@
 #include "Window.hpp"
 #include "Renderer.hpp"
 #include "Texture.hpp"
-<<<<<<< HEAD
 #include "Feature.hpp"
 #include "Field.hpp"
 #include "Menu.hpp"
@@ -24,9 +23,6 @@ using size_t         = std::size_t;
 using music_ptr      = Mix_Music *;
 using renderer_ptr   = SDL_Renderer *;
 using texture_map_t  = std::map<std::string, SDLTexture::Texture>;
-=======
-#include "Menu.hpp"
->>>>>>> ff163cb (Added the 1st scene and buttons on it)
 
 namespace Custom_Exceptions
 {
@@ -70,13 +66,10 @@ class Mainloop {
     texture_map_t   textures_;
 
     SDLMenu::Menu                             main_menu_;
-<<<<<<< HEAD
     std::stack<SDLScene::Scene>                  scenes_;
 
     SDLMenu::Menu                             main_menu_;
     std::stack<SDLScene::Scene>                  scenes_;
-=======
->>>>>>> 1e68a8f (Added the 1st scene and buttons on it)
 
 public:
     //----------
@@ -105,27 +98,12 @@ public:
         void draw_texture          (const std::string& id);
         void draw_frame_texture    (const std::string& id, int row, int frame);
 
-<<<<<<< HEAD
     //-----------------
     // Work with field
     //-----------------
         void draw_field   ()                          { field_.draw_all(); }
         void move_feature (size_t cell, size_t steps) { field_.move_feature(cell, steps); }
                                         
-=======
-    void move_texture          (const std::string& id, int delta_x, int delta_y);
-
-    void draw_texture          (const std::string& id, SDL_RendererFlip flip);
-    void draw_frame_texture    (const std::string& id, int row, int frame, SDL_RendererFlip flip);
-
-
-    //  This should be proccessed on the active scene
-    void handle_event (SDL_Event * event) {main_menu_.handle_event(event);}
-    void draw_scene() { main_menu_.draw(); }
-
-    //  This should be deleted
-    void update(bool *quit_status);
->>>>>>> ff163cb (Added the 1st scene and buttons on it)
 
     //  This should be proccessed on the active scene
     void handle_event (SDL_Event * event) {main_menu_.handle_event(event);}

@@ -4,55 +4,37 @@
 
 namespace SDLMainloop
 {
-
 //----------
 // Creation
 //----------
-    Mainloop::Mainloop() :
-        //  SDL initialization
-        sdl_{},
-        //  Create window
-        window_{"Really Armenian Backgammon", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                                            SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE},
-        //  Create renderer
-        renderer_{window_,  FIRST_SUITABLE, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC}
-    {
-        //  Set color of background
-        renderer_.set_renderer_draw_color(0, 0, 0, 255);
+Mainloop::Mainloop() :
+    //  SDL initialization
+    sdl_{},
+    //  Create window
+    window_{"Really Armenian Backgammon", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                                        SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE},
+    //  Create renderer
+    renderer_{window_,  FIRST_SUITABLE, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC}
+{
+    //  Set color of background
+    renderer_.set_renderer_draw_color(255, 255, 255, 255);
 
     //  Initialize PNG loading
     int png_flags = IMG_INIT_PNG;
     if (!(IMG_Init(png_flags) & png_flags))
         Custom_Exceptions::IMG_Init_Exception{SDL_GetError()};
 
-<<<<<<< HEAD
     //Initialize SDL_mixer
     if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 )
         Custom_Exceptions::Mix_OpenAudio_Exception{SDL_GetError()};
 }
-=======
-<<<<<<< HEAD
-        //Initialize SDL_mixer
-        if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 )
-            Custom_Exceptions::Mix_OpenAudio_Exception{SDL_GetError()};
-=======
-        mainloop.draw_scene();
 
-        // mainloop.draw_texture("board", SDL_FLIP_NONE);
-        // mainloop.draw_texture("bf_1" , SDL_FLIP_NONE);
-
-        //  Update screen
-        mainloop.present_renderer();
->>>>>>> ff163cb (Added the 1st scene and buttons on it)
+    Mainloop::~Mainloop()
+    {
+        //  Quit SDL subsystems
+        Mix_Quit();
+        IMG_Quit();
     }
->>>>>>> 1e68a8f (Added the 1st scene and buttons on it)
-
-Mainloop::~Mainloop()
-{
-    //  Quit SDL subsystems
-    Mix_Quit();
-    IMG_Quit();
-}
 
     bool Mainloop::loadmedia()
     {

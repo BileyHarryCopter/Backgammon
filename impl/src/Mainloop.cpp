@@ -44,13 +44,57 @@ Mainloop::Mainloop() :
         menu_.loadmedia(renderer_.get());
         game_.loadmedia(renderer_.get());
 
+        scenes_.push(menu_);
+
         return true;
+    }
+
+    void Mainloop::handle_event (SDL_Event * event)
+    {
+        if (scenes_.empty())
+        {
+            std::cout << "PRINT MAMINOY JOPI\n";
+            return;
+        }
+
+        std::visit([event](auto &scene)
+                   { scene.handle_event(event); },
+                   get_active());
+
+        switch (get_active().index())
+        {
+            case scenes::MENU:
+                {
+                    auto menu_ptr = std::get_if<SDLMenu::Menu>(&scenes_.top());
+                    if (menu_ptr->is_waiting())
+                        menu_ptr->be_active();
+                    else if (menu_ptr->is_moving_to_play())
+                    {
+                        menu_ptr->be_waiting();
+                        scenes_.push(game_);
+                    }
+                    break;
+                }
+            case scenes::GAME:
+                break;
+            default:
+                break;
+        }
+
     }
 
     void Mainloop::update(bool *quit_status)
     {
-        if (menu_.get_state() == SDLMenu::EXIT)
+        if (is_exit())
+            scenes_.pop();
+        
+        if (scenes_.empty())
             *quit_status = true;
+    }
+
+    scene_t& Mainloop::get_active()
+    {
+        return scenes_.top();
     }
 
 //--------------
@@ -59,26 +103,27 @@ Mainloop::Mainloop() :
     void run_backgammon()
     {
         Mainloop mainloop {};
-
         mainloop.loadmedia();
 
         bool quit = false;
-
         SDL_Event event;
-
         while (!quit)
         {
-            while (SDL_PollEvent(&event) != 0)
+            while ((SDL_PollEvent(&event) != 0) && (!quit))
             {
                 //User requests quit
                 if( event.type == SDL_QUIT )
                     quit = true;
+
+                mainloop.handle_event(&event);
+
+                mainloop.update(&quit);
             }
 
             //  Clear screen
             mainloop.clear_renderer();
 
-            mainloop.game_.draw();
+            mainloop.draw_scene();
 
             //  Update screen
             mainloop.present_renderer();

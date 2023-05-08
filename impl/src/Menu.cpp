@@ -33,9 +33,19 @@ namespace SDLMenu
             pair.second.handle_event(event);
         }
 
-        SDLWidget::Button_State quit_status = buttons_["Exit"].get_state();
-        if (quit_status == SDLWidget::Button_State::BUTTON_SPRITE_MOUSE_DOWN)
-            state_ = Menu_State::EXIT;
+        for (auto& pair : buttons_)
+        {
+            auto down_status = pair.second.get_state();
+            if (down_status == SDLWidget::Button_State::BUTTON_SPRITE_MOUSE_DOWN)
+            {
+                if (pair.first == "Play")
+                    state_ = Menu_State::MOVE_TO_PLAY;
+                else if (pair.first == "Settings")
+                    state_ = Menu_State::MOVE_TO_SETTINGS;
+                else
+                    state_ = Menu_State::EXIT;
+            }
+        }
     }
 
     void Menu::draw()

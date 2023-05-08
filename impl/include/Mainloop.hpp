@@ -6,6 +6,8 @@
 #include <stack>
 #include <vector>
 #include <string>
+#include <variant>
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
@@ -24,10 +26,11 @@
 #include "Game.hpp"
 #include "Scene.hpp"
 
-using size_t         = std::size_t;
-using music_ptr      = Mix_Music *;
-using renderer_ptr   = SDL_Renderer *;
-using texture_map_t  = std::map<std::string, SDLTexture::Texture>;
+using size_t        = std::size_t;
+using music_ptr     = Mix_Music *;
+using renderer_ptr  = SDL_Renderer *;
+using texture_map_t = std::map<std::string, SDLTexture::Texture>;
+using scene_t       = std::variant<SDLMenu::Menu, SDLGame::Game>;
 
 namespace Custom_Exceptions
 {
@@ -53,7 +56,8 @@ namespace Custom_Exceptions
 namespace SDLMainloop
 {
 
-struct SDL {
+struct SDL 
+{
     SDL() {
         if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
             Custom_Exceptions::SDL_Init_Exception{SDL_GetError()};
@@ -68,13 +72,17 @@ class Mainloop {
     Window          window_;
     Renderer        renderer_;
 
-    SDLMenu::Menu                 menu_;
-    // SDLGame::Game                 game_;
-    std::stack<SDLScene::Scene> scenes_;
+    SDLMenu::Menu   menu_;
+    SDLGame::Game   game_;
+
+    enum scenes
+    {
+        MENU = 0,
+        GAME = 1
+    };
+    std::stack<scene_t> scenes_;
 
 public:
-
-    SDLGame::Game                 game_;
 
 //----------
 // Creation
@@ -87,34 +95,34 @@ public:
 //--------------------
 // Work with Renderer
 //--------------------
-    void clear_renderer()   { renderer_.render_clear(); }
+    void clear_renderer()     { renderer_.render_clear(); }
     void present_renderer() { renderer_.render_present(); }
     renderer_ptr get_renderer() { return renderer_.get(); }
 
-//--------------------
-// Work with textures
-//--------------------
-    void set_pos_texture       (const std::string& id, int x, int y);
-    void set_demension_texture (const std::string& id, int width, int height);
+    void handle_event(SDL_Event *event);
 
-    void move_texture          (const std::string& id, int delta_x, int delta_y);
+    void draw_scene ()
+    {
+        if (scenes_.empty())
+            return;
 
-    void draw_texture          (const std::string& id);
-    void draw_frame_texture    (const std::string& id, int row, int frame);
-
-//-----------------
-// Work with field
-//-----------------
-    // void move_feature (size_t cell, size_t steps) { field_.move_feature(cell, steps); }
-                                        
-
-    //  This should be proccessed on the active scene
-    void handle_event (SDL_Event * event) {menu_.handle_event(event);}
-    void draw_scene() { menu_.draw(); }
+        std::visit([](auto &active_scene)
+                   { active_scene.draw(); },
+                   get_active());
+    }
 
     //  This should be deleted
     void update(bool *quit_status);
 
+private:
+    scene_t &get_active();
+
+    bool is_exit()
+    {
+        return std::visit([](auto &active_scene) -> bool
+                          { return active_scene.is_nonactive(); },
+                          get_active());
+    }
 };
 
 //--------------

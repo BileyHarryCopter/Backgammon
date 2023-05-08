@@ -26,34 +26,12 @@ namespace SDLGame
 
             field_.push(wfs[i], 11);
         }
-
-        field_.dump();
     }
-   
-    // void Game::set_pos_texture(const std::string& id, int x, int y) 
-    // {
-    //     get_texture(id).set_pos({x, y});
-    // }
-
-    // void Game::set_demension_texture (const std::string& id, int width, int height) 
-    // {
-    //     get_texture(id).set_demension(width, height);
-    // }
-
-    // void Game::move_texture(const std::string& id, int delta_x, int delta_y) 
-    // {
-    //     get_texture(id).move(delta_x, delta_y);
-    // }
 
     void Game::draw_texture(const std::string& id)
     {
         get_texture(id).draw();
     }
-
-    // void Game::draw_frame_texture(const std::string& id, int row, int frame) 
-    // {
-    //     get_texture(id).drawframe(row, frame);
-    // }
 
     void Game::draw()
     {

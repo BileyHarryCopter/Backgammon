@@ -36,7 +36,7 @@ public:
 
     void loadmedia(renderer_ptr renderer);
 
-    void handle_event(SDL_Event* event);
+    void handle_event(SDL_Event* event) {}
 
     void draw();
 

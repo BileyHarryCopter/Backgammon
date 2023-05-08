@@ -37,11 +37,8 @@ public:
 
     Menu_State get_state() { return state_; }
 
-    bool is_active ()                      { return state_ == Menu_State::ACTIVE; }
-    bool is_nonactive()                      { return state_ == Menu_State::EXIT; }
-    bool is_moving_to_play()         { return state_ == Menu_State::MOVE_TO_PLAY; }
-    bool is_moving_to_settings() { return state_ == Menu_State::MOVE_TO_SETTINGS; }
-
+    // void update();
+    // void clean();
 };
 
 }

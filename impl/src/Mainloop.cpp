@@ -25,10 +25,27 @@ namespace SDLMainloop
     if (!(IMG_Init(png_flags) & png_flags))
         Custom_Exceptions::IMG_Init_Exception{SDL_GetError()};
 
+<<<<<<< HEAD
     //Initialize SDL_mixer
     if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 )
         Custom_Exceptions::Mix_OpenAudio_Exception{SDL_GetError()};
 }
+=======
+<<<<<<< HEAD
+        //Initialize SDL_mixer
+        if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 )
+            Custom_Exceptions::Mix_OpenAudio_Exception{SDL_GetError()};
+=======
+        mainloop.draw_scene();
+
+        // mainloop.draw_texture("board", SDL_FLIP_NONE);
+        // mainloop.draw_texture("bf_1" , SDL_FLIP_NONE);
+
+        //  Update screen
+        mainloop.present_renderer();
+>>>>>>> ff163cb (Added the 1st scene and buttons on it)
+    }
+>>>>>>> 1e68a8f (Added the 1st scene and buttons on it)
 
 Mainloop::~Mainloop()
 {

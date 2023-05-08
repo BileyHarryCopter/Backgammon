@@ -70,49 +70,45 @@ class Mainloop {
     SDLMenu::Menu                             main_menu_;
     std::stack<SDLScene::Scene>                  scenes_;
 
-public:
-    //----------
-    // Creation
-    //----------
-        Mainloop();
-        ~Mainloop();
+    public:
+        //----------
+        // Creation
+        //----------
+            Mainloop();
+            ~Mainloop();
 
-        bool loadmedia();
+            bool loadmedia();
 
-    //--------------------
-    // Work with Renderer
-    //--------------------
-        void clear_renderer()   { renderer_.render_clear(); }
-        void present_renderer() { renderer_.render_present(); }
-        renderer_ptr get_renderer() { return renderer_.get(); }
+        //--------------------
+        // Work with Renderer
+        //--------------------
+            void clear_renderer()   { renderer_.render_clear(); }
+            void present_renderer() { renderer_.render_present(); }
+            renderer_ptr get_renderer() { return renderer_.get(); }
 
-    //--------------------
-    // Work with textures
-    //--------------------
-        void set_pos_texture       (const std::string& id, int x, int y);
-        void set_demension_texture (const std::string& id, int width, int height);
+        //--------------------
+        // Work with textures
+        //--------------------
+            void set_pos_texture       (const std::string& id, int x, int y);
+            void set_demension_texture (const std::string& id, int width, int height);
 
-        void move_texture          (const std::string& id, int delta_x, int delta_y);
+            void move_texture          (const std::string& id, int delta_x, int delta_y);
 
-        void draw_texture          (const std::string& id);
-        void draw_frame_texture    (const std::string& id, int row, int frame);
+            void draw_texture          (const std::string& id);
+            void draw_frame_texture    (const std::string& id, int row, int frame);
 
-    //-----------------
-    // Work with field
-    //-----------------
-        void draw_field   ()                          { field_.draw_all(); }
-        void move_feature (size_t cell, size_t steps) { field_.move_feature(cell, steps); }
-                                        
+        //-----------------
+        // Work with field
+        //-----------------
+            void draw_field   ()                          { field_.draw_all(); }
+            void move_feature (size_t cell, size_t steps) { field_.move_feature(cell, steps); }
+                                            
+            //  This should be proccessed on the active scene
+            void handle_event (SDL_Event * event) {main_menu_.handle_event(event);}
+            void draw_scene() { main_menu_.draw(); }
 
-    //  This should be proccessed on the active scene
-    void handle_event (SDL_Event * event) {main_menu_.handle_event(event);}
-    void draw_scene() { main_menu_.draw(); }
-
-    //  This should be deleted
-    void update(bool *quit_status);
-
-private:
-    SDLTexture::Texture& get_texture(const std::string &id) { return textures_.at(id); }
+    private:
+        SDLTexture::Texture& get_texture(const std::string &id) { return textures_.at(id); }
 
 };
 

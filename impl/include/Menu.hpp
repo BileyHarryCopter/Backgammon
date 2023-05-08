@@ -10,7 +10,7 @@
 namespace SDLMenu
 {
 
-enum MMenu_State
+enum Menu_State
 {
     ACTIVE           = 0,
     MOVE_TO_PLAY     = 1,
@@ -22,7 +22,7 @@ class Menu
 {
 using renderer_ptr = SDL_Renderer*;
 
-    MMenu_State state_ = MMenu_State::ACTIVE;
+    Menu_State state_ = Menu_State::ACTIVE;
     std::map<std::string, SDLWidget::Button> buttons_;
 
 public:
@@ -35,10 +35,13 @@ public:
 
     void draw();
 
-    MMenu_State get_state() { return state_; }
+    Menu_State get_state() { return state_; }
 
-    // void update();
-    // void clean();
+    bool is_active ()                      { return state_ == Menu_State::ACTIVE; }
+    bool is_nonactive()                      { return state_ == Menu_State::EXIT; }
+    bool is_moving_to_play()         { return state_ == Menu_State::MOVE_TO_PLAY; }
+    bool is_moving_to_settings() { return state_ == Menu_State::MOVE_TO_SETTINGS; }
+
 };
 
 }

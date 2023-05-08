@@ -2,6 +2,7 @@
 #define MAINLOOP_HPP
 
 #include <map>
+#include <stack>
 #include <vector>
 #include <string>
 
@@ -68,6 +69,7 @@ music_ptr music_ = nullptr;
     std::map<std::string, SDLTexture::Texture> textures_;
 
     SDLMenu::Menu                             main_menu_;
+    std::stack<SDLScene::Scene>                  scenes_;
 
 public:
 

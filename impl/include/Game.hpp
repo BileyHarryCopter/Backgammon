@@ -74,8 +74,6 @@ public:
     //------------------
     // Work with events
     //------------------
-        bool mouse_inside_non_empty (size_t cell);
-        bool mouse_inside_empty     (size_t cell);
         void handle_event (SDL_Event* event);
 
         game_state_info get_state() { return state_; }

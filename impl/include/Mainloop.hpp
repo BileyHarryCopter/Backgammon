@@ -67,10 +67,11 @@ class Mainloop {
     Window        window_;
     Renderer      renderer_;
     menu_t        menu_;
-    // SDLGame::Game                 game_;
     scene_stack_t scenes_;
 
     public:
+        game_t game_;
+
         //----------
         // Creation
         //----------
@@ -78,14 +79,6 @@ class Mainloop {
             ~Mainloop();
             bool loadmedia();
 
-    game_t game_;
-
-        //--------------------
-        // Work with Renderer
-        //--------------------
-            void clear_renderer()   { renderer_.render_clear(); }
-            void present_renderer() { renderer_.render_present(); }
-            renderer_ptr get_renderer() { return renderer_.get(); }
         //--------------------
         // Work with Renderer
         //--------------------
@@ -93,23 +86,6 @@ class Mainloop {
             void present_renderer() { renderer_.render_present(); }
             renderer_ptr get_renderer() { return renderer_.get(); }
 
-        //--------------------
-        // Work with textures
-        //--------------------
-            void set_pos_texture       (const std::string& id, int x, int y);
-            void set_demension_texture (const std::string& id, int width, int height);
-        //--------------------
-        // Work with textures
-        //--------------------
-            void set_pos_texture       (const std::string& id, int x, int y);
-            void set_demension_texture (const std::string& id, int width, int height);
-
-//--------------------
-// Work with Renderer
-//--------------------
-    void clear_renderer()   { renderer_.render_clear(); }
-    void present_renderer() { renderer_.render_present(); }
-    renderer_ptr get_renderer() { return renderer_.get(); }
                         
     //  This should be proccessed on the active scene
     void handle_event (SDL_Event * event) {menu_.handle_event(event);}

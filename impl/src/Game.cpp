@@ -109,6 +109,12 @@ namespace SDLGame
                         state_.dest_cell_ = NO_CELL; 
                         show_game_state_info();
                     }
+
+                    else {
+                        state_.src_cell_  = NO_CELL;
+                        state_.dest_cell_ = NO_CELL;
+                        show_game_state_info(); 
+                    }
                 }
             }
         }

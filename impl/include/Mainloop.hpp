@@ -21,6 +21,7 @@ using size_t         = std::size_t;
 using music_ptr      = Mix_Music *;
 using renderer_ptr   = SDL_Renderer *;
 using texture_map_t  = std::map<std::string, SDLTexture::Texture>;
+#include "Menu.hpp"
 
 namespace Custom_Exceptions
 {
@@ -63,6 +64,8 @@ class Mainloop {
     SDLField::Field field_;
     texture_map_t   textures_;
 
+    SDLMenu::Menu                             main_menu_;
+
 public:
     //----------
     // Creation
@@ -96,6 +99,18 @@ public:
         void draw_field   ()                          { field_.draw_all(); }
         void move_feature (size_t cell, size_t steps) { field_.move_feature(cell, steps); }
                                         
+    void move_texture          (const std::string& id, int delta_x, int delta_y);
+
+    void draw_texture          (const std::string& id, SDL_RendererFlip flip);
+    void draw_frame_texture    (const std::string& id, int row, int frame, SDL_RendererFlip flip);
+
+
+    //  This should be proccessed on the active scene
+    void handle_event (SDL_Event * event) {main_menu_.handle_event(event);}
+    void draw_scene() { main_menu_.draw(); }
+
+    //  This should be deleted
+    void update(bool *quit_status);
 
 private:
     SDLTexture::Texture& get_texture(const std::string &id) { return textures_.at(id); }

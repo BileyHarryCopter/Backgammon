@@ -10,11 +10,7 @@
 namespace SDLMenu
 {
 
-<<<<<<< HEAD
 enum Menu_State
-=======
-enum MMenu_State
->>>>>>> 1e68a8f (Added the 1st scene and buttons on it)
 {
     ACTIVE           = 0,
     MOVE_TO_PLAY     = 1,
@@ -26,11 +22,7 @@ class Menu
 {
 using renderer_ptr = SDL_Renderer*;
 
-<<<<<<< HEAD
     Menu_State state_ = Menu_State::ACTIVE;
-=======
-    MMenu_State state_ = MMenu_State::ACTIVE;
->>>>>>> 1e68a8f (Added the 1st scene and buttons on it)
     std::map<std::string, SDLWidget::Button> buttons_;
 
 public:
@@ -43,7 +35,6 @@ public:
 
     void draw();
 
-<<<<<<< HEAD
     Menu_State get_state() { return state_; }
 
     bool is_active ()                      { return state_ == Menu_State::ACTIVE; }
@@ -51,12 +42,6 @@ public:
     bool is_moving_to_play()         { return state_ == Menu_State::MOVE_TO_PLAY; }
     bool is_moving_to_settings() { return state_ == Menu_State::MOVE_TO_SETTINGS; }
 
-=======
-    MMenu_State get_state() { return state_; }
-
-    // void update();
-    // void clean();
->>>>>>> 1e68a8f (Added the 1st scene and buttons on it)
 };
 
 }

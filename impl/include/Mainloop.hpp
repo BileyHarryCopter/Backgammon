@@ -3,6 +3,7 @@
 
 #include <map>
 #include <stack>
+#include <stack>
 #include <vector>
 #include <string>
 #include <SDL2/SDL.h>
@@ -64,9 +65,6 @@ class Mainloop {
     Renderer        renderer_;
     SDLField::Field field_;
     texture_map_t   textures_;
-
-    SDLMenu::Menu                             main_menu_;
-    std::stack<SDLScene::Scene>                  scenes_;
 
     SDLMenu::Menu                             main_menu_;
     std::stack<SDLScene::Scene>                  scenes_;

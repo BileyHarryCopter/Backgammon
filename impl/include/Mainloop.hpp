@@ -123,18 +123,7 @@ class Mainloop {
             //  This should be proccessed on the active scene
             void handle_event (SDL_Event * event) {main_menu_.handle_event(event);}
             void draw_scene() { main_menu_.draw(); }
-        //-----------------
-        // Work with field
-        //-----------------
-            void draw_field   ()                          { field_.draw_all(); }
-            void move_feature (size_t cell, size_t steps) { field_.move_feature(cell, steps); }
-                                            
-            //  This should be proccessed on the active scene
-            void handle_event (SDL_Event * event) {main_menu_.handle_event(event);}
-            void draw_scene() { main_menu_.draw(); }
 
-    private:
-        SDLTexture::Texture& get_texture(const std::string &id) { return textures_.at(id); }
     private:
         SDLTexture::Texture& get_texture(const std::string &id) { return textures_.at(id); }
 

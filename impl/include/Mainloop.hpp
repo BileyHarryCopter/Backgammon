@@ -2,8 +2,6 @@
 #define MAINLOOP_HPP
 
 #include <map>
-#include <stack>
-#include <stack>
 #include <vector>
 #include <string>
 #include <SDL2/SDL.h>
@@ -18,8 +16,6 @@
 #include "Texture.hpp"
 #include "Feature.hpp"
 #include "Field.hpp"
-
-
 #include "Menu.hpp"
 #include "Game.hpp"
 #include "Scene.hpp"
@@ -74,17 +70,39 @@ class Mainloop {
     // SDLGame::Game                 game_;
     scene_stack_t scenes_;
 
-public:
+    public:
+        //----------
+        // Creation
+        //----------
+            Mainloop();
+            ~Mainloop();
+            bool loadmedia();
 
     game_t game_;
 
-//----------
-// Creation
-//----------
-    Mainloop();
-    ~Mainloop();
+        //--------------------
+        // Work with Renderer
+        //--------------------
+            void clear_renderer()   { renderer_.render_clear(); }
+            void present_renderer() { renderer_.render_present(); }
+            renderer_ptr get_renderer() { return renderer_.get(); }
+        //--------------------
+        // Work with Renderer
+        //--------------------
+            void clear_renderer()   { renderer_.render_clear(); }
+            void present_renderer() { renderer_.render_present(); }
+            renderer_ptr get_renderer() { return renderer_.get(); }
 
-    bool loadmedia();
+        //--------------------
+        // Work with textures
+        //--------------------
+            void set_pos_texture       (const std::string& id, int x, int y);
+            void set_demension_texture (const std::string& id, int width, int height);
+        //--------------------
+        // Work with textures
+        //--------------------
+            void set_pos_texture       (const std::string& id, int x, int y);
+            void set_demension_texture (const std::string& id, int width, int height);
 
 //--------------------
 // Work with Renderer

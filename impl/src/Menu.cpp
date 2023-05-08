@@ -35,7 +35,7 @@ namespace SDLMenu
 
         SDLWidget::Button_State quit_status = buttons_["Exit"].get_state();
         if (quit_status == SDLWidget::Button_State::BUTTON_SPRITE_MOUSE_DOWN)
-            state_ = MMenu_State::EXIT;
+            state_ = Menu_State::EXIT;
     }
 
     void Menu::draw()

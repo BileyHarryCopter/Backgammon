@@ -11,7 +11,7 @@ Nobutton::Nobutton (const std::string &label, const SDL_Rect &rect, renderer_ptr
 
 void Nobutton::draw()
 {
-    texture_.draw(SDL_FLIP_NONE);
+    texture_.draw();
 }
 
 Button::Button (const std::string& label, const SDL_Rect &rect, renderer_ptr renderer,
@@ -67,7 +67,7 @@ void Button::handle_event(SDL_Event* event)
 
 void Button::draw()
 {
-    textures_[state_].draw(SDL_FLIP_NONE);
+    textures_[state_].draw();
 }
 
 }

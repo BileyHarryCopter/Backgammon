@@ -19,6 +19,7 @@
 #include "Feature.hpp"
 #include "Field.hpp"
 #include "Menu.hpp"
+#include "Scene.hpp"
 
 using size_t         = std::size_t;
 using music_ptr      = Mix_Music *;

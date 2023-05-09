@@ -4,19 +4,17 @@
 #include <map>
 #include <SDL2/SDL.h>
 
-#include "CustomException.hpp"
-
 #include "Texture.hpp"
 #include "Widget.hpp"
 #include "Field.hpp"
 
+
+namespace SDLGame
+{
 using renderer_ptr  = SDL_Renderer*;
 using texture_map_t = std::map<std::string, SDLTexture::Texture>;
 using button_map_t  = std::map<std::string, SDLWidget::Button>;
 using field_t       = SDLField::Field;
-
-namespace SDLGame
-{
 
 enum game_activity
 {

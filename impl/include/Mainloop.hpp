@@ -20,14 +20,6 @@
 #include "Game.hpp"
 #include "Scene.hpp"
 
-using size_t         = std::size_t;
-using music_ptr      = Mix_Music *;
-using renderer_ptr   = SDL_Renderer *;
-using texture_map_t  = std::map<std::string, SDLTexture::Texture>;
-using menu_t         = SDLMenu::Menu;
-using game_t         = SDLGame::Game;
-using scene_stack_t  = SDLScene::Scene;
-
 namespace Custom_Exceptions
 {
     struct SDL_Init_Exception : public Base_Exception
@@ -51,6 +43,13 @@ namespace Custom_Exceptions
 
 namespace SDLMainloop
 {
+using size_t         = std::size_t;
+using music_ptr      = Mix_Music *;
+using renderer_ptr   = SDL_Renderer *;
+using texture_map_t  = std::map<std::string, SDLTexture::Texture>;
+using menu_t         = SDLMenu::Menu;
+using game_t         = SDLGame::Game;
+using scene_stack_t  = SDLScene::Scene;
 
 struct SDL {
     SDL() {

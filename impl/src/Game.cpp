@@ -101,7 +101,7 @@ namespace SDLGame
                             steps = state_.dest_cell_ - state_.src_cell_;
                         
                         else 
-                            steps = (num_of_cells - state_.src_cell_) + state_.dest_cell_;
+                            steps = (SDLField::num_of_cells - state_.src_cell_) + state_.dest_cell_;
 
                         field_.move_feature(state_.src_cell_, steps);
 

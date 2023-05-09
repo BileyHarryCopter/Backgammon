@@ -4,24 +4,9 @@
 #include <map>
 #include <vector>
 
+#include "CustomException.hpp"
+
 #include "Feature.hpp"
-
-using feature       = SDLFeature::Feature;
-using point_t       = SDL_Point;
-using size_t        = std::size_t;
-using feature_map_t = std::map <size_t, std::vector<feature>>;
-
-const size_t num_of_cells  = 24;
-const size_t num_of_rows   = 15;
-
-const size_t feature_h     = 100;
-const size_t feature_w     = 100;
-
-const size_t cell_step     = 91;
-const size_t row_step      = 22;
-
-const size_t NO_CELL       = 24;
-
 
 namespace Custom_Exceptions
 {
@@ -39,6 +24,19 @@ namespace Custom_Exceptions
 
 namespace SDLField 
 {
+using size_t        = std::size_t;
+using feature       = SDLFeature::Feature;
+using feature_map_t = std::map <size_t, std::vector<feature>>;
+using point_t       = SDLTexture::point_t;
+
+const size_t num_of_cells  = 24;
+const size_t num_of_rows   = 15;
+const size_t feature_h     = 100;
+const size_t feature_w     = 100;
+const size_t cell_step     = 91;
+const size_t row_step      = 22;
+const size_t NO_CELL       = 24;
+
     enum Field_Part {
         NO_PART = -1,
         UPPER   =  1,
@@ -46,8 +44,16 @@ namespace SDLField
     };
 
     class Field {
+
+
         feature_map_t field_;
-        point_t field_positions [num_of_rows][num_of_cells];
+        point_t       field_positions [num_of_rows][num_of_cells];
+        point_t       peaks [num_of_cells] = {
+            {273,  511}, {345,  511}, {420,  511}, {491,  511}, {563,  511}, {635,  511},
+            {806,  511}, {876,  511}, {950,  511}, {1021, 511}, {1095, 511}, {1167, 511},
+            {1146, 354}, {1077, 354}, {1005, 354}, {937,  354}, {867,  354}, {798,  354},
+            {647,  354}, {577,  354}, {508,  354}, {438,  354}, {368,  354}, {299,  354} 
+        };
 
         public:
             Field();

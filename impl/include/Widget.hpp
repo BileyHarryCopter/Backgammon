@@ -55,6 +55,7 @@ enum Statusbar_State
 class Statusbar final
 {
 using size_t = std::size_t;
+using renderer_ptr = SDL_Renderer*;
 
     std::string                                          label_;
     SDL_Rect                                              rect_;

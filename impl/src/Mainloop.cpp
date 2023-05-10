@@ -151,11 +151,4 @@ Mainloop::Mainloop() :
         }
     }
 
-    //  This should be deleted
-    void Mainloop::update(bool *quit_status)
-    {
-        if (menu_.get_state() == SDLMenu::EXIT)
-            *quit_status = true;
-    }
-
 }

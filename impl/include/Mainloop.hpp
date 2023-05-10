@@ -3,6 +3,7 @@
 
 #include <map>
 #include <vector>
+#include <stack>
 #include <string>
 #include <variant>
 
@@ -94,7 +95,7 @@ public:
 // Creation
 //----------
     Mainloop();
-    ~Mainloop();
+    // ~Mainloop();
 
     bool loadmedia();
 

@@ -5,14 +5,12 @@
 #include <SDL2/SDL.h>
 #include <iostream>
 
-#include "CustomException.hpp"
 #include "Texture.hpp"
-
-using texture = SDLTexture::Texture;
-using point_t = SDL_Point;
 
 namespace SDLGameObject
 {
+using texture = SDLTexture::Texture;
+using point_t = SDLTexture::point_t;
 
 enum Activity {
     ACTIVE     = 1,
@@ -38,6 +36,10 @@ public:
         texture_.simple_dump();
         std::cout << "Activity = " << activity_ << std::endl;
     }  
+
+    int     get_texture_w   () { return texture_.get_w(); }
+    int     get_texture_h   () { return texture_.get_h(); }
+    point_t get_texture_pos () { return texture_.get_pos(); }
 };
 
 } 

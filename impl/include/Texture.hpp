@@ -6,13 +6,7 @@
 #include <SDL2/SDL_image.h>
 #include <iostream>
 
-#include "Window.hpp"
-
-using renderer_ptr = SDL_Renderer*;
-using texture_ptr  =  SDL_Texture*;
-using texture_t    =   SDL_Texture;
-using point_t      =     SDL_Point;
-using str_t        =   std::string;
+#include "CustomException.hpp"
 
 namespace Custom_Exceptions
 {
@@ -39,6 +33,15 @@ namespace Custom_Exceptions
 
 namespace SDLTexture
 {
+using renderer_ptr = SDL_Renderer*;
+using texture_ptr  =  SDL_Texture*;
+using texture_t    =   SDL_Texture;
+using str_t        =   std::string;
+
+struct point_t {
+    int x;
+    int y;
+};    
 
 class Texture {
         renderer_ptr renderer_;
@@ -65,7 +68,11 @@ class Texture {
         void move (int delta_x, int delta_y);  
 
         void draw ();
-        void drawframe(int row, int frame);      
+        void drawframe(int row, int frame);   
+
+        int     get_h   () { return h; }
+        int     get_w   () { return w; }
+        point_t get_pos () { return pos_; } 
 };
 
 }

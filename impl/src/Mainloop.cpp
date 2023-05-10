@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "Mainloop.hpp"
 
 namespace SDLMainloop
@@ -27,16 +25,6 @@ Mainloop::Mainloop() :
         //Initialize SDL_mixer
         if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 )
             Custom_Exceptions::Mix_OpenAudio_Exception{SDL_GetError()};
-    }
-
-//------------
-// Destruction
-//------------
-    Mainloop::~Mainloop()
-    {
-        //  Quit SDL subsystems
-        Mix_Quit();
-        IMG_Quit();
     }
 
     bool Mainloop::loadmedia()
@@ -162,4 +150,12 @@ Mainloop::Mainloop() :
             mainloop.present_renderer();
         }
     }
+
+    //  This should be deleted
+    void Mainloop::update(bool *quit_status)
+    {
+        if (menu_.get_state() == SDLMenu::EXIT)
+            *quit_status = true;
+    }
+
 }

@@ -3,10 +3,10 @@
 
 #include "GameObject.hpp"
 
-using texture = SDLTexture::Texture;
-
 namespace SDLFeature
 {
+
+using texture = SDLTexture::Texture;
 
 enum Colour {
     BLACK = 1,

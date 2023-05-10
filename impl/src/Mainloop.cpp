@@ -62,11 +62,14 @@ Mainloop::Mainloop() :
                 //User requests quit
                 if( event.type == SDL_QUIT )
                     quit = true;
-                // mainloop.game_.handle_event(&event);
+                mainloop.game_.handle_event(&event);
             }
 
             //  Clear screen
             mainloop.clear_renderer();
+
+            // sleep(1);
+            // mainloop.game_.move_feature(12, 3);
 
             mainloop.game_.draw();
 

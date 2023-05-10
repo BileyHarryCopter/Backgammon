@@ -17,7 +17,7 @@ Button::Button (cJSON * createinfo, renderer_ptr renderer)
               cJSON_GetObjectItem(createinfo, "height")->valueint};
 
     textures_.push_back(SDLTexture::Texture{cJSON_GetObjectItem(createinfo, "path_mouse_off")->valuestring,
-                                            renderer, rect_.x, rect_.y});   
+                                            renderer, rect_.x, rect_.y});
     textures_.push_back(SDLTexture::Texture{cJSON_GetObjectItem(createinfo, "path_mouse_over")->valuestring,
                                             renderer, rect_.x, rect_.y});
     textures_.push_back(SDLTexture::Texture{cJSON_GetObjectItem(createinfo, "path_mouse_down")->valuestring,

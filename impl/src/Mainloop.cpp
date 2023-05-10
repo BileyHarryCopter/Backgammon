@@ -41,9 +41,11 @@ Mainloop::Mainloop() :
 
     bool Mainloop::loadmedia()
     {
-        menu_.loadmedia("../../impl/assets/menu/menu_media.json", renderer_.get());
+        menu_.loadmedia    ("../../impl/assets/menu/menu_media.json",         renderer_.get());
+        settings_.loadmedia("../../impl/assets/settings/settings_media.json", renderer_.get());
         game_.loadmedia(renderer_.get());
 
+        // scenes_.push(settings_);
         scenes_.push(menu_);
 
         return true;
@@ -63,6 +65,7 @@ Mainloop::Mainloop() :
             case scenes::MENU:
                 {
                     auto menu_ptr = std::get_if<SDLMenu::Menu>(&scenes_.top());
+
                     if (menu_ptr->is_waiting())
                         menu_ptr->be_active();
                     else if (menu_ptr->is_moving_to_play())
@@ -70,13 +73,30 @@ Mainloop::Mainloop() :
                         menu_ptr->be_waiting();
                         scenes_.push(game_);
                     }
-                    // else if (menu_ptr->is_moving_to_settings())
-                    // {
-                    //     menu_ptr->be_waiting();
-                    //     scenes_.push(settings_);
-                    // }
+                    else if (menu_ptr->is_moving_to_settings())
+                    {
+                        menu_ptr->be_waiting();
+                        scenes_.push(settings_);
+
+                        auto settings_ptr = std::get_if<SDLSettings::Settings>(&scenes_.top());
+                        settings_ptr->be_active();
+                    }
                     break;
                 }
+                break;
+            case scenes::SETTINGS:
+                {
+                    auto settings_ptr = std::get_if<SDLSettings::Settings>(&scenes_.top());
+                    if (settings_ptr->is_nonactive())
+                    {
+                        scenes_.pop();
+
+                        auto menu_ptr = std::get_if<SDLMenu::Menu>(&scenes_.top());
+                        menu_ptr->be_active();
+                    }
+                    break;
+                } 
+                break;
             case scenes::GAME:
                 break;
             default:

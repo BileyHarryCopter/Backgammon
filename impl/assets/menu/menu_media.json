@@ -1,11 +1,9 @@
 [
     {
-        "type": "Nobutton",
-        "label": "Backgammon",
+        "type": "Texture",
+        "label": "Scene_Name",
         "pos_x": 650,
         "pos_y": 200,
-        "width": 290,
-        "height": 80,
         "path_to_texture": "../../impl/assets/menu/play_on.png"
     },
     {

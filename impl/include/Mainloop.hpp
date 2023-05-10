@@ -31,7 +31,7 @@ using size_t        = std::size_t;
 using music_ptr     = Mix_Music *;
 using renderer_ptr  = SDL_Renderer *;
 using texture_map_t = std::map<std::string, SDLTexture::Texture>;
-using scene_t       = std::variant<SDLMenu::Menu, SDLGame::Game>;
+using scene_t       = std::variant<SDLMenu::Menu, SDLGame::Game, SDLSettings::Settings>;
 
 namespace Custom_Exceptions
 {
@@ -75,12 +75,13 @@ class Mainloop {
 
     SDLMenu::Menu             menu_;
     SDLGame::Game             game_;
-    // SDLSettings::Settings settings_;
+    SDLSettings::Settings settings_;
 
     enum scenes
     {
         MENU = 0,
-        GAME = 1
+        GAME = 1,
+        SETTINGS = 2
     };
     std::stack<scene_t> scenes_;
 

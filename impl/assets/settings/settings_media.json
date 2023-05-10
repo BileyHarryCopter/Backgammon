@@ -1,40 +1,13 @@
 [
     {
-        "type": "Texture",
-        "label": "Volume",
-        "path_to_texture": "../../impl/assets/settings/volume.png"
-    },
-    {
-        "type": "Statusbar",
-        "label": "Play",
-        "pos_x": 500,
-        "pos_y": 300,
-        "width": 290,
-        "height": 80,
-        "path_mouse_off": "../../impl/assets/menu/play_off.png",
-        "path_mouse_over": "../../impl/assets/menu/play_on.png",
-        "path_mouse_down": "../../impl/assets/menu/play_on.png"
-    },
-    {
-        "type": "Button",
-        "label": "Settings",
-        "pos_x": 500,
-        "pos_y": 380,
-        "width": 290,
-        "height": 80,
-        "path_mouse_off": "../../impl/assets/menu/settings_off.png",
-        "path_mouse_over": "../../impl/assets/menu/settings_on.png",
-        "path_mouse_down": "../../impl/assets/menu/settings_on.png"
-    },
-    {
         "type": "Button",
         "label": "Exit",
         "pos_x": 500,
         "pos_y": 460,
         "width": 290,
         "height": 80,
-        "path_mouse_off": "../../impl/assets/menu/exit_off.png",
-        "path_mouse_over": "../../impl/assets/menu/exit_on.png",
-        "path_mouse_down": "../../impl/assets/menu/exit_on.png"
+        "path_mouse_off": "../../impl/assets/settings/exit_off.png",
+        "path_mouse_over": "../../impl/assets/settings/exit_on.png",
+        "path_mouse_down": "../../impl/assets/settings/exit_on.png"
     }
 ]

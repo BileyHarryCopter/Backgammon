@@ -4,22 +4,28 @@ namespace SDLSettings
 {
     void Settings::loadmedia(const std::string& path, renderer_ptr renderer)
     {
-        // //  create Volume nobutton:
-        // SDLWidget::Nobutton volume_nobutton ("Volume", {400, 300, 290, 80}, renderer,
-        //                                      "../../impl/assets/volume.png");
-        // nobuttons_.insert({"Volume", volume_nobutton});
+        auto text = Service::readfile(path);
+        cJSON *json_data = cJSON_Parse(text.data());
 
-        // //  create Music nobutton:
-        // SDLWidget::Nobutton music_nobutton  ("Music", {400, 300, 290, 80}, renderer,
-        //                                      "../../impl/assets/music.png");
-        // nobuttons_.insert({"Music", music_nobutton});
+        for (auto node = json_data->child; node != NULL; node = node->next)
+        {
+            auto type  =  cJSON_GetObjectItem(node, "type")->valuestring;
+            auto label = cJSON_GetObjectItem(node, "label")->valuestring;
+            if (type == std::string{"Texture"})
+            {
+                SDL_Point texture_pos = {cJSON_GetObjectItem(node, "pos_x")->valueint,
+                                         cJSON_GetObjectItem(node, "pos_x")->valueint};
+                textures_.push_back(SDLTexture::Texture{cJSON_GetObjectItem(node, "path_to_texture")->valuestring,
+                                    renderer, texture_pos.x, texture_pos.y});
+            }
+            else if (type == std::string{"Button"})
+            {
+                SDLWidget::Button button {node, renderer};
+                buttons_.insert({label, button});
+            }
+        }
 
-        // //  create Exit button:
-        // SDLWidget::Button exit_button  ("Exit", {700, 660, 290, 80}, renderer,
-        //                                 "../../impl/assets/exit_off.png",
-        //                                 "../../impl/assets/exit_on.png",
-        //                                 "../../impl/assets/exit_on.png");
-        // buttons_.insert({"Exit", exit_button});
+        cJSON_Delete(json_data);
     }
 
     void Settings::handle_event(SDL_Event* event)
@@ -37,6 +43,18 @@ namespace SDLSettings
                 if (pair.first == "Exit")
                     state_ = Settings_State::EXIT;
             }
+        }
+    }
+
+    void Settings::draw()
+    {
+        for (auto& texture : textures_)
+        {
+            texture.draw();
+        }
+        for (auto& pair : buttons_)
+        {
+            pair.second.draw();
         }
     }
 }

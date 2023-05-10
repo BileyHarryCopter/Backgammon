@@ -29,13 +29,25 @@ using feature       = SDLFeature::Feature;
 using feature_map_t = std::map <size_t, std::vector<feature>>;
 using point_t       = SDLTexture::point_t;
 
-const size_t num_of_cells  = 24;
-const size_t num_of_rows   = 15;
-const size_t feature_h     = 100;
-const size_t feature_w     = 100;
-const size_t cell_step     = 91;
-const size_t row_step      = 22;
-const size_t NO_CELL       = 24;
+const size_t  NO_CELL       = 24;
+
+//----------------
+// Field geometry
+//----------------
+    const size_t  num_of_cells  = 24;
+    const size_t  num_of_rows   = 15;
+    const size_t  feature_h     = 100;
+    const size_t  feature_w     = 100;
+
+    //--------------
+    // Bottom peaks
+    //--------------
+        const size_t  b_peak_w = 81;
+        const size_t  b_peak_h = 348;  
+        // Left bottom peaks:
+            const point_t l_lb_p = {188, 858};
+        // Right bottom peaks:
+            const point_t r_lb_p = {766, 858};
 
     enum Field_Part {
         NO_PART = -1,
@@ -60,15 +72,20 @@ const size_t NO_CELL       = 24;
             ~Field() {};
 
             void dump ();
+            // For game:
+                void push (const feature& i_feature, size_t cell = 0);
+                void move_feature (size_t cur_cell, size_t steps);
+                size_t mouse_inside_cell ();
 
-            void push (const feature& i_feature, size_t cell = 0);
+            // Getters:
+                point_t get_field_position (size_t cell, size_t num) { return field_positions [num][cell]; }
+                size_t  get_cell_size      (size_t cell)             { return field_[cell].size(); }
+                bool    empty              (size_t cell)             { return field_[cell].empty(); }
 
-            void    move_feature       (size_t cur_cell, size_t steps);
-            point_t get_field_position (size_t cell, size_t num) { return field_positions [num][cell]; }
-            size_t  get_cell_size      (size_t cell)             { return field_[cell].size(); }
-            bool    empty              (size_t cell)             { return field_[cell].empty(); }
+            
 
-            size_t mouse_inside_cell ();
+            void b_peak_setting (int peak, point_t lb_p);
+            void t_peak_setting (int peak, point_t rt_p);
 
             void draw (size_t cell, size_t num);
             void draw_all ();

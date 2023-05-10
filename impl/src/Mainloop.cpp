@@ -62,7 +62,7 @@ Mainloop::Mainloop() :
                 //User requests quit
                 if( event.type == SDL_QUIT )
                     quit = true;
-                mainloop.game_.handle_event(&event);
+                // mainloop.game_.handle_event(&event);
             }
 
             //  Clear screen

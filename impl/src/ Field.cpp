@@ -2,72 +2,41 @@
 
 namespace SDLField 
 {
+    void Field::b_peak_setting (int peak, point_t lb_p) {
+        point_t med_p     = { lb_p.x + b_peak_w * peak + b_peak_w / 2, 
+                              lb_p.y };
+
+        point_t start_p   = { lb_p.x + b_peak_w * peak + b_peak_w / 2 - feature_w/2,
+                              lb_p.y - feature_h };
+
+        point_t delta_vec = { (peaks [peak].x - med_p.x) / (num_of_rows - 1),
+                              (b_peak_h - feature_h)     / (num_of_rows - 1) };
+        
+
+        for (size_t row = 0; row < num_of_rows; ++ row) {
+            field_positions[row][peak] = start_p;
+
+            std::cout << "field_positions [" << row << "]["<< peak << "] = {"
+                          << field_positions[row][peak].x << ", " 
+                          << field_positions[row][peak].y << "}" << std::endl;
+
+            start_p.x += delta_vec.x;
+            start_p.y += delta_vec.y;
+        }
+    }
+
     Field::Field () {
-        size_t i;
-        size_t j;
+        for (size_t peak = 0; peak < num_of_cells/4; ++peak) {
+            b_peak_setting(peak, l_lb_p);
+        }
+
+        std::cout << "\n\n";
+
+        for (size_t peak = num_of_cells/4; peak < num_of_cells/2; ++peak) {
+            b_peak_setting (peak, r_lb_p);
+        }
         
-        point_t start_p = {140, 800};
-
-        for (i = 0; i < num_of_rows; ++i) {
-            for (j = 0; j < num_of_cells/4; ++j) {
-                field_positions[i][j] = start_p;
-                start_p.x += cell_step;
-
-                std::cout << "field_positions [" << i << "]["<< j << "] = {"
-                          << field_positions[i][j].x << ", " 
-                          << field_positions[i][j].y << "}" << std::endl;
-            }
-            start_p.x = 140;
-            start_p.y -= row_step;
-        }
-
-        std::cout << "\n\n";
-        
-        start_p = {743, 800};
-        for (i = 0; i < num_of_rows; ++i) {
-            for (j = num_of_cells/4; j < num_of_cells/2; ++j) {
-                field_positions[i][j] = start_p;
-                start_p.x += cell_step;
-
-                std::cout << "field_positions [" << i << "]["<< j << "] = {"
-                          << field_positions[i][j].x << ", " 
-                          << field_positions[i][j].y << "}" << std::endl;
-            }
-            start_p.x = 743;
-            start_p.y -= row_step;
-        }
-
-        std::cout << "\n\n";
-
-        start_p = {1198, 60};
-        for (i = 0; i < num_of_rows; ++i) {
-            for (j = num_of_cells/2; j < 3*num_of_cells/4; ++j) {
-                field_positions[i][j] = start_p;
-                start_p.x -= cell_step;
-
-                std::cout << "field_positions [" << i << "]["<< j << "] = {"
-                          << field_positions[i][j].x << ", " 
-                          << field_positions[i][j].y << "}" << std::endl;
-            }
-            start_p.x = 1198;
-            start_p.y += row_step;
-        }
-
-        std::cout << "\n\n";
-
-        start_p = {605, 60};
-        for (i = 0; i < num_of_rows; ++i) {
-            for (j = 3*num_of_cells/4; j < num_of_cells; ++j) {
-                field_positions[i][j] = start_p;
-                start_p.x -= cell_step;
-
-                std::cout << "field_positions [" << i << "]["<< j << "] = {"
-                          << field_positions[i][j].x << ", " 
-                          << field_positions[i][j].y << "}" << std::endl;
-            }
-            start_p.x = 605;
-            start_p.y += row_step;
-        }
+       
     }
 
     void Field::dump() {
@@ -140,7 +109,7 @@ namespace SDLField
                 if (x < field_positions[0][cell].x)
                     continue;
                 
-                else if (x > (field_positions[0][cell].x + cell_step))
+                else if (x > (field_positions[0][cell].x + b_peak_w))
                     continue;
 
                 else if (y > (field_positions[0][cell].y + feature_h))
@@ -168,7 +137,7 @@ namespace SDLField
                 if (x < field_positions[0][cell].x)
                     continue;
                 
-                else if (x > (field_positions[0][cell].x + cell_step))
+                else if (x > (field_positions[0][cell].x + b_peak_w))
                     continue;
 
                 else if (y > (field_positions[cell_size][cell].y + feature_h))

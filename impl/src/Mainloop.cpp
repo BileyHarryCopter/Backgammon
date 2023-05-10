@@ -41,7 +41,7 @@ Mainloop::Mainloop() :
 
     bool Mainloop::loadmedia()
     {
-        menu_.loadmedia(renderer_.get());
+        menu_.loadmedia("../../impl/assets/menu/menu_media.json", renderer_.get());
         game_.loadmedia(renderer_.get());
 
         scenes_.push(menu_);
@@ -52,10 +52,7 @@ Mainloop::Mainloop() :
     void Mainloop::handle_event (SDL_Event * event)
     {
         if (scenes_.empty())
-        {
-            std::cout << "PRINT MAMINOY JOPI\n";
             return;
-        }
 
         std::visit([event](auto &scene)
                    { scene.handle_event(event); },
@@ -73,6 +70,11 @@ Mainloop::Mainloop() :
                         menu_ptr->be_waiting();
                         scenes_.push(game_);
                     }
+                    // else if (menu_ptr->is_moving_to_settings())
+                    // {
+                    //     menu_ptr->be_waiting();
+                    //     scenes_.push(settings_);
+                    // }
                     break;
                 }
             case scenes::GAME:
@@ -80,7 +82,16 @@ Mainloop::Mainloop() :
             default:
                 break;
         }
+    }
 
+    void Mainloop::draw_scene ()
+    {
+        if (scenes_.empty())
+            return;
+
+        std::visit([](auto &active_scene)
+                   { active_scene.draw(); },
+                   get_active());
     }
 
     void Mainloop::update(bool *quit_status)
@@ -92,9 +103,11 @@ Mainloop::Mainloop() :
             *quit_status = true;
     }
 
-    scene_t& Mainloop::get_active()
+    bool Mainloop::is_exit()
     {
-        return scenes_.top();
+        return std::visit([](auto &active_scene) -> bool
+                          { return active_scene.is_nonactive(); },
+                          get_active());
     }
 
 //--------------

@@ -4,7 +4,10 @@
 #include <map>
 #include <vector>
 #include <SDL2/SDL.h>
+#include <cJSON.h>
 
+#include "Utility.hpp"
+#include "Texture.hpp"
 #include "Widget.hpp"
 
 namespace SDLMenu
@@ -24,13 +27,13 @@ class Menu
 using renderer_ptr = SDL_Renderer*;
 
     Menu_State state_ = Menu_State::ACTIVE;
-    std::map<std::string, SDLWidget::Button> buttons_;
+
+    std::map<std::string, SDLWidget::Button>     buttons_;
 
 public:
     Menu() {}
 
-    void loadmedia(renderer_ptr renderer);
-    //  void loadmedia(const std::string& path_to_json, renderer_ptr renderer);   -   right way
+    void loadmedia(const std::string& path, renderer_ptr renderer);
 
     void handle_event(SDL_Event* event);
 
@@ -45,23 +48,8 @@ public:
     bool is_nonactive()                      {return state_ == Menu_State::EXIT;}
 
     //  Add exceptions for bad changes
-    void be_active()   
-    {
-        if (is_waiting())
-            state_ = Menu_State::ACTIVE;
-        else
-            throw std::runtime_error{"THROW!"};
-    }
-    void be_waiting() 
-    {
-        if (is_moving_to_play() || is_moving_to_settings())
-            state_ = Menu_State::WAITING;
-        else 
-            throw std::runtime_error{"THROW!"};
-    }
-
-    // void update();
-    // void clean();
+    void be_active();
+    void be_waiting();
 };
 
 }

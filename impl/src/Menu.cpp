@@ -2,28 +2,23 @@
 
 namespace SDLMenu
 {
-    void Menu::loadmedia(renderer_ptr renderer)
+    void Menu::loadmedia(const std::string& path, renderer_ptr renderer)
     {
-        //  create Play button:
-        SDLWidget::Button play_button  ("Play", {500, 300, 290, 80}, renderer,
-                                        "../../impl/assets/play_off.png",
-                                        "../../impl/assets/play_on.png",
-                                        "../../impl/assets/play_on.png");
-        buttons_.insert({"Play", play_button});
+        auto text = Service::readfile(path);
+        cJSON *json_data = cJSON_Parse(text.data());
 
-        //  create Settings button:
-        SDLWidget::Button settings_button  ("Settings", {500, 380, 290, 80}, renderer,
-                                        "../../impl/assets/settings_off.png",
-                                        "../../impl/assets/settings_on.png",
-                                        "../../impl/assets/settings_on.png");
-        buttons_.insert({"Settings", settings_button});
+        for (auto node = json_data->child; node != NULL; node = node->next)
+        {
+            auto type  =  cJSON_GetObjectItem(node, "type")->valuestring;
+            auto label = cJSON_GetObjectItem(node, "label")->valuestring;
+            if (type == std::string{"Button"})
+            {
+                SDLWidget::Button button {node, renderer};
+                buttons_.insert({label, button});
+            }
+        }
 
-        //  create Exit button:
-        SDLWidget::Button exit_button  ("Exit", {500, 460, 290, 80}, renderer,
-                                        "../../impl/assets/exit_off.png",
-                                        "../../impl/assets/exit_on.png",
-                                        "../../impl/assets/exit_on.png");
-        buttons_.insert({"Exit", exit_button});
+        cJSON_Delete(json_data);
     }
 
     void Menu::handle_event(SDL_Event* event)
@@ -56,11 +51,19 @@ namespace SDLMenu
         }
     }
 
-    // void Menu::update()
-    // {
-    // }
+    void Menu::be_active()
+    {
+        if (is_waiting())
+            state_ = Menu_State::ACTIVE;
+        else
+            throw std::runtime_error{"THROW!"};
+    }
 
-    // void Menu::clean()
-    // {
-    // }
+    void Menu::be_waiting() 
+    {
+        if (is_moving_to_play() || is_moving_to_settings())
+            state_ = Menu_State::WAITING;
+        else 
+            throw std::runtime_error{"THROW!"};
+    }
 }

@@ -5,28 +5,23 @@
 namespace SDLWidget
 {
 
-Nobutton::Nobutton (const std::string &label, const SDL_Rect &rect, renderer_ptr renderer,
-                    const std::string &path) : Widget (label, rect), texture_(path, renderer, rect_.x, rect_.y)
-{}
-
-void Nobutton::draw()
+//---------
+//  BUTTON
+//---------
+Button::Button (cJSON * createinfo, renderer_ptr renderer)
 {
-    texture_.draw();
-}
+    label_ = {cJSON_GetObjectItem(createinfo, "label")->valuestring};
+    rect_  = {cJSON_GetObjectItem(createinfo, "pos_x")->valueint,
+              cJSON_GetObjectItem(createinfo, "pos_y")->valueint,
+              cJSON_GetObjectItem(createinfo, "width")->valueint,
+              cJSON_GetObjectItem(createinfo, "height")->valueint};
 
-Button::Button (const std::string& label, const SDL_Rect &rect, renderer_ptr renderer,
-                                                                const std::string& mouse_out_path,
-                                                                const std::string& mouse_down_path,
-                                                                const std::string& mouse_over_path) : 
-        Widget (label, rect)
-{
-    SDLTexture::Texture mouse_out  (mouse_out_path,  renderer, rect_.x, rect_.y);
-    SDLTexture::Texture mouse_over (mouse_over_path, renderer, rect_.x, rect_.y);
-    SDLTexture::Texture mouse_down (mouse_down_path, renderer, rect_.x, rect_.y);
-
-    textures_.push_back(mouse_out);
-    textures_.push_back(mouse_over);
-    textures_.push_back(mouse_down);
+    textures_.push_back(SDLTexture::Texture{cJSON_GetObjectItem(createinfo, "path_mouse_off")->valuestring,
+                                            renderer, rect_.x, rect_.y});   
+    textures_.push_back(SDLTexture::Texture{cJSON_GetObjectItem(createinfo, "path_mouse_over")->valuestring,
+                                            renderer, rect_.x, rect_.y});
+    textures_.push_back(SDLTexture::Texture{cJSON_GetObjectItem(createinfo, "path_mouse_down")->valuestring,
+                                            renderer, rect_.x, rect_.y});
 }
 
 void Button::handle_event(SDL_Event* event)
@@ -68,6 +63,15 @@ void Button::handle_event(SDL_Event* event)
 void Button::draw()
 {
     textures_[state_].draw();
+}
+
+
+// -----------
+//  STATUSBAR
+// -----------
+Statusbar::Statusbar(cJSON * createinfo, renderer_ptr renderer)
+{
+    
 }
 
 }

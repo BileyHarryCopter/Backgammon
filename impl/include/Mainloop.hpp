@@ -24,6 +24,7 @@
 
 #include "Menu.hpp"
 #include "Game.hpp"
+#include "Settings.hpp"
 #include "Scene.hpp"
 
 using size_t        = std::size_t;
@@ -72,8 +73,9 @@ class Mainloop {
     Window          window_;
     Renderer        renderer_;
 
-    SDLMenu::Menu   menu_;
-    SDLGame::Game   game_;
+    SDLMenu::Menu             menu_;
+    SDLGame::Game             game_;
+    // SDLSettings::Settings settings_;
 
     enum scenes
     {
@@ -101,28 +103,14 @@ public:
 
     void handle_event(SDL_Event *event);
 
-    void draw_scene ()
-    {
-        if (scenes_.empty())
-            return;
+    void draw_scene();
 
-        std::visit([](auto &active_scene)
-                   { active_scene.draw(); },
-                   get_active());
-    }
-
-    //  This should be deleted
+//  This should be deleted
     void update(bool *quit_status);
 
 private:
-    scene_t &get_active();
-
-    bool is_exit()
-    {
-        return std::visit([](auto &active_scene) -> bool
-                          { return active_scene.is_nonactive(); },
-                          get_active());
-    }
+    scene_t &get_active() { return scenes_.top(); }
+    bool is_exit();
 };
 
 //--------------

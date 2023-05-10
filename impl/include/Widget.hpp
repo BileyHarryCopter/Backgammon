@@ -2,31 +2,21 @@
 #define WIDGET_HPP
 
 #include <map>
+#include <unordered_map>
 #include <string>
 #include <vector>
 #include <utility>
 #include <SDL2/SDL.h>
+#include "cJSON.h"
 
 #include "Texture.hpp"
 
 namespace SDLWidget
 {
 
-struct Widget
-{
-using renderer_ptr = SDL_Renderer*;
-
-    std::string  label_;
-    SDL_Rect      rect_;
-
-    Widget() {}
-    Widget (const std::string& label, const SDL_Rect& rect) : label_{label}, rect_{rect} {}
-
-    virtual ~Widget() {}
-
-    void set_position(int x, int y) { rect_.x = x; rect_.y = y; }
-};
-
+//---------
+//  BUTTON
+//---------
 enum Button_State 
 {
     BUTTON_SPRITE_MOUSE_OUT         = 0,
@@ -35,33 +25,51 @@ enum Button_State
 	BUTTON_SPRITE_TOTAL             = 3
 };
 
-class Nobutton final : public Widget 
+class Button final
 {
-    SDLTexture::Texture texture_;
-
-    Nobutton(const std::string &label, const SDL_Rect &rect, renderer_ptr renderer,
-             const std::string &path);
-
-    void draw();
-};
-
-class Button final : public Widget
-{
+using renderer_ptr = SDL_Renderer*;
+    std::string                                          label_;
+    SDL_Rect                                              rect_;
     Button_State state_ = Button_State::BUTTON_SPRITE_MOUSE_OUT;
     std::vector<SDLTexture::Texture>                  textures_;
 
 public:
-    Button() : Widget{} {};
 
-    Button(const std::string &label, const SDL_Rect &rect,  renderer_ptr renderer, 
-                                                            const std::string& mouse_out_path,
-                                                            const std::string& mouse_down_path,
-                                                            const std::string& mouse_over_path);
+    Button(cJSON * createinfo, renderer_ptr renderer);
 
-    void handle_event(SDL_Event *event);
     void draw();
-
+    void handle_event(SDL_Event *event);
     Button_State get_state() { return state_; }
+};
+
+
+//------------
+//  STATUSBAR
+//------------
+enum Statusbar_State
+{
+    STATUSBAR_BALANCE = 0,
+    STATUSBAR_INCREASE = 1,
+    STATUSBAR_DECREASE = 2
+};
+class Statusbar final
+{
+using size_t = std::size_t;
+
+    std::string                                          label_;
+    SDL_Rect                                              rect_;
+    // std::pair<Button, Button>                          buttons_;
+    // std::unordered_map<size_t, SDLTexture::Texture>   textures_;
+    Statusbar_State state_ = Statusbar_State::STATUSBAR_BALANCE;
+    size_t current_, max_;
+
+public:
+
+    Statusbar(cJSON * createinfo, renderer_ptr renderer);
+
+    void draw();
+    void handle_event(SDL_Event *event);
+    Statusbar_State get_state() { return state_; }
 };
 
 }

@@ -12,7 +12,7 @@ namespace SDLGame
             std::vector <SDLTexture::Texture> bf_textures;
             std::vector <SDLFeature::Feature> bfs;
             for (size_t i = 0; i < 15; ++i) {
-                bf_textures.push_back({"../../impl/assets/black_feature.png", renderer});
+                bf_textures.push_back({"../../impl/assets/bf.png", renderer});
 
                 bfs.push_back({bf_textures[i], SDLFeature::BLACK});
 
@@ -22,7 +22,7 @@ namespace SDLGame
             std::vector <SDLTexture::Texture> wf_textures;
             std::vector <SDLFeature::Feature> wfs;
             for (size_t i = 0; i < 15; ++i) {
-                wf_textures.push_back({"../../impl/assets/white_feature.png", renderer});
+                wf_textures.push_back({"../../impl/assets/wf.png", renderer});
 
                 wfs.push_back({wf_textures[i], SDLFeature::WHITE});
 

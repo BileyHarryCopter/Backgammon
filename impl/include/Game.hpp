@@ -8,7 +8,6 @@
 #include "Widget.hpp"
 #include "Field.hpp"
 
-
 namespace SDLGame
 {
 using renderer_ptr  = SDL_Renderer*;
@@ -60,13 +59,13 @@ public:
     // Work with field
     //-----------------
         void move_feature (size_t cell, size_t steps) { field_.move_feature(cell, steps); }
-private:
+    private:
         void draw_field() { field_.draw_all(); }
+    public:
     
     //----------
     // Draw all
     //----------
-public:
         void draw();
 
     //------------------

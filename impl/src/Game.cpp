@@ -6,7 +6,7 @@ namespace SDLGame
     // Creation
     //----------
         void Game::loadmedia(renderer_ptr renderer) {
-            SDLTexture::Texture board ("../../impl/assets/board_test.png", renderer);
+            SDLTexture::Texture board ("../../impl/assets/board.png", renderer);
             textures_.insert({"board", board});
 
             std::vector <SDLTexture::Texture> bf_textures;

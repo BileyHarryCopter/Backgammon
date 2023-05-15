@@ -208,6 +208,27 @@ namespace SDLField
         return false;
     }
 
+    feature* Field::active_feature_in_cell (size_t cell)
+    {
+        if ( field_[cell].empty())
+            return nullptr;
+        else 
+            return &field_[cell].back();
+    }
+
+//-----------------------
+// Getters and selectors
+//-----------------------
+
+    SDLFeature::Colour Field::get_cell_colour(size_t cell)
+    {
+        auto current_feature = active_feature_in_cell(cell);
+        if (current_feature == nullptr)
+            return SDLFeature::NO_COLOR;
+        else
+            return current_feature->get_colour();
+    }
+
 //---------
 // Drawers
 //---------

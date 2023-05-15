@@ -1,33 +1,43 @@
 #ifndef FIGURE_HPP
 #define FIGURE_HPP
 
-#include "GameObject.hpp"
+#include <SDL2/SDL.h>
+#include <iostream>
+
+#include "Texture.hpp"
 
 namespace SDLFeature
 {
 
-using texture = SDLTexture::Texture;
-
 enum Colour {
-    BLACK = 1,
-    WHITE = 0
+    BLACK = -1,
+    NO_COLOR = 0,
+    WHITE =  1
 };
 
-class Feature final : public SDLGameObject::GameObject
+class Feature final
 {
-    Colour colour_;
+using texture_t = SDLTexture::Texture;
+using point_t   = SDLTexture::point_t;
+
+    Colour     colour_;
+    texture_t texture_;
 
 public:
-    Feature (texture& texture, Colour colour) : 
-        GameObject(texture), colour_(colour) {}
+    Feature(texture_t& texture, Colour colour) : colour_{colour}, texture_{texture} {}
+    Feature (const Feature& rhs) : colour_{rhs.colour_}, texture_{rhs.texture_} {}
+    
     ~Feature () {}
 
-    Feature (const Feature& rhs) : GameObject(rhs), colour_(rhs.colour_) {}
+    void draw() { texture_.draw(); }
+    void dump();
 
-    void dump () {
-        GameObject::dump();
-        std::cout << "Colour = " << colour_ << std::endl;
-    }
+    Colour  get_colour()       { return colour_;}
+
+    void set_texture_pos (point_t new_pos) { texture_.set_pos(new_pos); }
+    int     get_texture_w()    { return texture_.get_w(); }
+    int     get_texture_h()    { return texture_.get_h(); }
+    point_t get_texture_pos()  { return texture_.get_pos(); }
 };
 
 }

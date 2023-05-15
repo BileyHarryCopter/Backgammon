@@ -35,11 +35,15 @@ namespace SDLGame
         void Game::show_game_state_info () {
             std::cout << "Game activity = " << state_.activity_ << std::endl
                       << "Colour = "        << state_.colour_   << std::endl
-                      << "Source cell = "   << state_.src_cell_ << std::endl
+                      << "Source cell = "   << state_.src_cell_
+                      << " (" << state_.src_is_head << ")"      << std::endl
                       << "Dest cell = "     << state_.dest_cell_<< std::endl
                       << "Ways = { " << state_.ways_[0] << ", " << state_.ways_[1]
-                      <<        ", " << state_.ways_[2] << ", " << state_.ways_[3]
-                      <<        "}"                << std::endl << std::endl;
+                      << ", " <<        state_.ways_[2] << ", " << state_.ways_[3] 
+                      << "} " << std::endl
+                      << "White features in house = " << state_.white_f_in_house << std::endl
+                      << "Black features in house = " << state_.black_f_in_house << std::endl
+                      << std::endl;
 
         }
     
@@ -104,13 +108,17 @@ namespace SDLGame
                         }
                     case IS_WAITING_SRC_CELL:
                         {
-                            if ((state_.src_cell_ == NO_CELL))
+                            if (state_.src_cell_ == NO_CELL)
                             {
                                 size_t mouse_cell = field_.mouse_inside_cell();
 
                                 if (!field_.empty(mouse_cell)     && 
                                      field_.get_cell_colour(mouse_cell) == state_.colour_)
                                 {
+                                    if ( (state_.colour_ == SDLFeature::BLACK && mouse_cell == 12) ||
+                                         (state_.colour_ == SDLFeature::WHITE && mouse_cell == 0 ) )
+                                    { state_.src_is_head = true; }
+
                                     state_.src_cell_ = mouse_cell;
                                     state_.activity_ = IS_WAITING_DST_CELL;
 
@@ -133,23 +141,13 @@ namespace SDLGame
                                 else 
                                     steps = (SDLField::num_of_cells - state_.src_cell_) + state_.dest_cell_;
 
-                                bool valid_motion = false;
-                                for (auto& x : state_.ways_)
-                                {
-                                    if (steps == x)
-                                    {
-                                        valid_motion = true;
-                                        x = 0;
-                                        break;
-                                    }
-                                }
-
-                                if (valid_motion)
+                                if (motion_valid(steps))
                                 {
                                     field_.move_feature(state_.src_cell_, steps);
 
-                                    state_.src_cell_  = NO_CELL;
-                                    state_.dest_cell_ = NO_CELL;
+                                    state_.src_cell_   = NO_CELL;
+                                    state_.src_is_head = false;
+                                    state_.dest_cell_  = NO_CELL;
 
                                     if (state_.ways_[0] == 0 && state_.ways_[1] == 0 &&
                                         state_.ways_[2] == 0 && state_.ways_[3] == 0)
@@ -160,11 +158,83 @@ namespace SDLGame
                                     else
                                         state_.activity_ = IS_WAITING_SRC_CELL;
                                 }
+
+                                else {
+                                    state_.src_cell_   = NO_CELL;
+                                    state_.src_is_head = false;
+                                    state_.dest_cell_  = NO_CELL;
+                                    state_.activity_   = IS_WAITING_SRC_CELL;  
+                                }
+
                                 show_game_state_info();
-                                break;
                             }
+
+                            else {
+                                state_.src_cell_  = NO_CELL;
+                                state_.src_is_head = false;
+                                state_.dest_cell_ = NO_CELL;
+                                state_.activity_ = IS_WAITING_SRC_CELL;
+
+                                show_game_state_info();
+                            }
+
+                            break;
                         }
                 }
             }
+        }
+
+        bool Game::motion_valid (size_t steps) {
+            // Validation of finish steps
+            if ( ( state_.colour_ == SDLFeature::BLACK                               ) &&
+                 ( state_.src_cell_ >  black_finish_cell - SDLField::num_of_cells/4  ) &&
+                 ( state_.src_cell_ <= black_finish_cell                             ) &&
+                 ( state_.src_cell_ + steps > black_finish_cell                      ) ) 
+            { return false; }
+    
+            else if ( ( state_.colour_ == SDLFeature::WHITE                             ) &&
+                      ( state_.src_cell_ > white_finish_cell - SDLField::num_of_cells/4 ) &&
+                      ( state_.src_cell_ <= white_finish_cell                           ) &&
+                      ( state_.src_cell_ + steps > white_finish_cell                    ) )
+            { return false; }
+
+            // Simple validation of dest_cell colour == src_cell colour:
+            SDLFeature::Colour src_cell_c  = field_.get_cell_colour(state_.src_cell_);
+            SDLFeature::Colour dest_cell_c = field_.get_cell_colour(state_.dest_cell_);
+
+            if (dest_cell_c == SDLFeature::NO_COLOR)
+                dest_cell_c = src_cell_c;
+            
+            if (dest_cell_c != src_cell_c)
+                return false;
+
+            // Validation if head cell sum_steps:
+            if (state_.src_is_head) {
+                int sum_ways = 0;
+                for (auto x : state_.ways_) {
+                    sum_ways += x;
+                }
+
+                if (steps == sum_ways) {
+                    for (auto& x : state_.ways_) {
+                        x = 0;
+                    }
+                    return true;
+                }
+            }
+
+            // Validation of steps == one of ways:
+            else {
+                for (auto& x : state_.ways_)
+                {      
+                    if (steps == x)
+                    {
+                        x = 0;
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 }

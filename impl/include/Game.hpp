@@ -18,6 +18,9 @@ using button_map_t  = std::map<std::string, SDLWidget::Button>;
 using field_t       = SDLField::Field;
 using die_t         = SDLDie::Die;
 
+const int black_finish_cell = 11;
+const int white_finish_cell = 23;
+
 enum game_activity
 {
     EXIT   = 0,
@@ -31,11 +34,18 @@ enum game_activity
 const size_t NO_CELL = 24;
 
 struct game_state_info {
-    game_activity      activity_  = IS_WAITING_ROLLING_DIE;
-    int                colour_    = SDLFeature::WHITE;
-    size_t             src_cell_  = NO_CELL;
-    size_t             dest_cell_ = NO_CELL;
-    std::array<int, 4>      ways_ =     {0};
+    game_activity activity_ = IS_WAITING_ROLLING_DIE;
+    int colour_ = SDLFeature::WHITE;
+
+    size_t src_cell_  = NO_CELL;
+    bool src_is_head = false;
+
+    size_t dest_cell_ = NO_CELL;
+
+    std::array<int, 4> ways_ = {0};
+
+    size_t white_f_in_house = 0;
+    size_t black_f_in_house = 0;
 
     void switch_colour() { colour_ *= -1; }
 };
@@ -83,6 +93,9 @@ public:
     // Work with events
     //------------------
         void handle_event (SDL_Event* event);
+    private:
+        bool motion_valid (size_t steps);
+    public:
 
         game_state_info get_state() { return state_; }
 

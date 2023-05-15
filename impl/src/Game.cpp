@@ -28,13 +28,19 @@ namespace SDLGame
 
                 field_.push(wfs[i], 0);
             }
+
+            die_.loadmedia(renderer);
         }
 
         void Game::show_game_state_info () {
-            std::cout << "Game activity = " << state_.activity_ << "\n" 
-                      << "Motion = "        << state_.motion_   << "\n" 
-                      << "Source cell = "   << state_.src_cell_ << "\n" 
-                      << "Dest cell = "     << state_.dest_cell_<< std::endl;
+            std::cout << "Game activity = " << state_.activity_ << std::endl
+                      << "Colour = "        << state_.colour_   << std::endl
+                      << "Source cell = "   << state_.src_cell_ << std::endl
+                      << "Dest cell = "     << state_.dest_cell_<< std::endl
+                      << "Ways = { " << state_.ways_[0] << ", " << state_.ways_[1]
+                      <<        ", " << state_.ways_[2] << ", " << state_.ways_[3]
+                      <<        "}"                << std::endl << std::endl;
+
         }
     
     //-----------------------
@@ -62,59 +68,102 @@ namespace SDLGame
         void Game::draw() {
             draw_texture("board");
             draw_field();
+            die_.draw();
         }
-    
+
     //------------------
     // Work with events
     //------------------
-        void Game::handle_event(SDL_Event* event) {
-            if ( event -> type == SDL_MOUSEBUTTONDOWN ) 
+        void Game::handle_event(SDL_Event* event) 
+        {
+            if (event->type == SDL_MOUSEBUTTONDOWN)
             {
-                std::cout << "Catch mouse button down." << std::endl; 
-                show_game_state_info();
+                switch (state_.activity_)
+                {
+                    case IS_WAITING_ROLLING_DIE:
+                        {
+                            die_.handle_event(event);
 
-                if (state_.src_cell_ == NO_CELL) {
-                    std::cout << "No src cell branch." << std::endl;
+                            if (die_.is_active())
+                            {
+                                auto ways = die_.get_status();
+                                if (ways.first == ways.second)
+                                    state_.ways_.fill(ways.first);
+                                else
+                                {
+                                    state_.ways_[0] = ways.first;
+                                    state_.ways_[1] = ways.second;
+                                }
 
-                    size_t mouse_cell = field_.mouse_inside_cell();
-                    std::cout << "Mouse inside " << mouse_cell << " cell. \n" << std::endl;
+                                state_.activity_ = IS_WAITING_SRC_CELL;
+                                
+                                show_game_state_info();
+                            }
 
-                    if (!field_.empty(mouse_cell)) {
-                        state_.src_cell_ = mouse_cell;
-                        show_game_state_info();
-                    }
-                }
+                            break;
+                        }
+                    case IS_WAITING_SRC_CELL:
+                        {
+                            if ((state_.src_cell_ == NO_CELL))
+                            {
+                                size_t mouse_cell = field_.mouse_inside_cell();
 
-                else {
-                    std::cout << "Src cell branch." << std::endl;
+                                if (!field_.empty(mouse_cell)     && 
+                                     field_.get_cell_colour(mouse_cell) == state_.colour_)
+                                {
+                                    state_.src_cell_ = mouse_cell;
+                                    state_.activity_ = IS_WAITING_DST_CELL;
 
-                    size_t mouse_cell = field_.mouse_inside_cell();
-                    std::cout << "Mouse inside " << mouse_cell << " cell. \n" << std::endl;
+                                    show_game_state_info();
+                                }
+                            }
+                            break;
+                        }
+                    case IS_WAITING_DST_CELL:
+                        {
+                            size_t mouse_cell = field_.mouse_inside_cell();
 
-                    if ((mouse_cell != state_.src_cell_) && (mouse_cell != NO_CELL)) {
-                        state_.dest_cell_ = mouse_cell;
-                        show_game_state_info();
+                            if ((mouse_cell != state_.src_cell_) && (mouse_cell != NO_CELL))
+                            {
+                                state_.dest_cell_ = mouse_cell;
 
-                        size_t steps;
+                                size_t steps;
+                                if (state_.dest_cell_ > state_.src_cell_)
+                                    steps = state_.dest_cell_ - state_.src_cell_;
+                                else 
+                                    steps = (SDLField::num_of_cells - state_.src_cell_) + state_.dest_cell_;
 
-                        if (state_.dest_cell_ > state_.src_cell_)
-                            steps = state_.dest_cell_ - state_.src_cell_;
-                        
-                        else 
-                            steps = (SDLField::num_of_cells - state_.src_cell_) + state_.dest_cell_;
+                                bool valid_motion = false;
+                                for (auto& x : state_.ways_)
+                                {
+                                    if (steps == x)
+                                    {
+                                        valid_motion = true;
+                                        x = 0;
+                                        break;
+                                    }
+                                }
 
-                        field_.move_feature(state_.src_cell_, steps);
+                                if (valid_motion)
+                                {
+                                    field_.move_feature(state_.src_cell_, steps);
 
-                        state_.src_cell_  = NO_CELL;
-                        state_.dest_cell_ = NO_CELL; 
-                        show_game_state_info();
-                    }
+                                    state_.src_cell_  = NO_CELL;
+                                    state_.dest_cell_ = NO_CELL;
 
-                    else {
-                        state_.src_cell_  = NO_CELL;
-                        state_.dest_cell_ = NO_CELL;
-                        show_game_state_info(); 
-                    }
+                                    if (state_.ways_[0] == 0 && state_.ways_[1] == 0 &&
+                                        state_.ways_[2] == 0 && state_.ways_[3] == 0)
+                                    {
+                                        state_.activity_ = IS_WAITING_ROLLING_DIE;
+                                        state_.switch_colour();
+                                    }
+                                    else
+                                        state_.activity_ = IS_WAITING_SRC_CELL;
+                                }
+                                show_game_state_info();
+                                break;
+                            }
+                        }
                 }
             }
         }

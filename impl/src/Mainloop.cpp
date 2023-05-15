@@ -29,17 +29,91 @@ Mainloop::Mainloop() :
 
     bool Mainloop::loadmedia()
     {
-        menu_.loadmedia(renderer_.get());
+        menu_.loadmedia    ("../../impl/assets/menu/menu_media.json",         renderer_.get());
+        settings_.loadmedia("../../impl/assets/settings/settings_media.json", renderer_.get());
         game_.loadmedia(renderer_.get());
+
+        scenes_.push(menu_);
 
         return true;
     }
 
-    Mainloop::~Mainloop()
+    void Mainloop::handle_event (SDL_Event * event)
     {
-        //  Quit SDL subsystems
-        Mix_Quit();
-        IMG_Quit();
+        if (scenes_.empty())
+            return;
+
+        std::visit([event](auto &scene)
+                   { scene.handle_event(event); },
+                   get_active());
+
+        switch (get_active().index())
+        {
+            case scenes::MENU:
+                {
+                    auto menu_ptr = std::get_if<SDLMenu::Menu>(&get_active());
+
+                    if (menu_ptr->is_waiting())
+                    {
+                        menu_ptr->be_active();
+                    }
+                    else if (menu_ptr->is_moving_to_play())
+                    {
+                        menu_ptr->be_waiting();
+
+                        scenes_.push(game_);
+                    }
+                    else if (menu_ptr->is_moving_to_settings())
+                    {
+                        menu_ptr->be_waiting();
+
+                        settings_.be_active();
+                        scenes_.push(settings_);
+                    }
+                    break;
+                }
+                break;
+            case scenes::SETTINGS:
+                {
+                    auto settings_ptr = std::get_if<SDLSettings::Settings>(&get_active());
+                    if (settings_ptr->is_nonactive())
+                    {
+                        scenes_.pop();
+                    }
+                    break;
+                } 
+                break;
+            case scenes::GAME:
+                break;
+            default:
+                break;
+        }
+    }
+
+    void Mainloop::draw_scene ()
+    {
+        if (scenes_.empty())
+            return;
+
+        std::visit([](auto &active_scene)
+                   { active_scene.draw(); },
+                   get_active());
+    }
+
+    void Mainloop::update(bool *quit_status)
+    {
+        if (is_exit())
+            scenes_.pop();
+        
+        if (scenes_.empty())
+            *quit_status = true;
+    }
+
+    bool Mainloop::is_exit()
+    {
+        return std::visit([](auto &active_scene) -> bool
+                          { return active_scene.is_nonactive(); },
+                          get_active());
     }
 
 //--------------
@@ -48,41 +122,31 @@ Mainloop::Mainloop() :
     void run_backgammon()
     {
         Mainloop mainloop {};
-
         mainloop.loadmedia();
 
         bool quit = false;
-
         SDL_Event event;
-
         while (!quit)
         {
-            while (SDL_PollEvent(&event) != 0)
+            while ((SDL_PollEvent(&event) != 0) && (!quit))
             {
                 //User requests quit
                 if( event.type == SDL_QUIT )
                     quit = true;
-                mainloop.game_.handle_event(&event);
+
+                mainloop.handle_event(&event);
+
+                mainloop.update(&quit);
             }
 
             //  Clear screen
             mainloop.clear_renderer();
 
-            // sleep(1);
-            // mainloop.game_.move_feature(12, 3);
-
-            mainloop.game_.draw();
+            mainloop.draw_scene();
 
             //  Update screen
             mainloop.present_renderer();
         }
-    }
-
-    //  This should be deleted
-    void Mainloop::update(bool *quit_status)
-    {
-        if (menu_.get_state() == SDLMenu::EXIT)
-            *quit_status = true;
     }
 
 }

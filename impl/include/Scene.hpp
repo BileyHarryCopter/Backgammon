@@ -19,7 +19,6 @@ class Scene
 {
     
     Scene_State state_ = Scene_State::EXIT;
-    std::map<std::string, SDLWidget::Widget> widgets_;
 
 public:
 

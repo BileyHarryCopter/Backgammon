@@ -3,7 +3,10 @@
 
 #include <map>
 #include <vector>
+#include <stack>
 #include <string>
+#include <variant>
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
@@ -18,6 +21,7 @@
 #include "Field.hpp"
 #include "Menu.hpp"
 #include "Game.hpp"
+#include "Settings.hpp"
 #include "Scene.hpp"
 
 namespace Custom_Exceptions
@@ -50,8 +54,10 @@ using texture_map_t  = std::map<std::string, SDLTexture::Texture>;
 using menu_t         = SDLMenu::Menu;
 using game_t         = SDLGame::Game;
 using scene_stack_t  = SDLScene::Scene;
+using scene_t        = std::variant<SDLMenu::Menu, SDLGame::Game, SDLSettings::Settings>;
 
-struct SDL {
+struct SDL 
+{
     SDL() {
         if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
             Custom_Exceptions::SDL_Init_Exception{SDL_GetError()};
@@ -61,38 +67,50 @@ struct SDL {
 };
 
 class Mainloop {
-    music_ptr     music_ = nullptr;
-    SDL           sdl_;
-    Window        window_;
-    Renderer      renderer_;
-    menu_t        menu_;
-    scene_stack_t scenes_;
+    music_ptr       music_ = nullptr;
+    SDL             sdl_;
+    Window          window_;
+    Renderer        renderer_;
 
-    public:
-        game_t game_;
+    SDLMenu::Menu             menu_;
+    SDLGame::Game             game_;
+    SDLSettings::Settings settings_;
 
-        //----------
-        // Creation
-        //----------
-            Mainloop();
-            ~Mainloop();
-            bool loadmedia();
+    enum scenes
+    {
+        MENU = 0,
+        GAME = 1,
+        SETTINGS = 2
+    };
+    std::stack<scene_t> scenes_;
 
-        //--------------------
-        // Work with Renderer
-        //--------------------
-            void clear_renderer()   { renderer_.render_clear(); }
-            void present_renderer() { renderer_.render_present(); }
-            renderer_ptr get_renderer() { return renderer_.get(); }
+public:
 
-                        
-    //  This should be proccessed on the active scene
-    void handle_event (SDL_Event * event) {menu_.handle_event(event);}
-    void draw_scene() { menu_.draw(); }
+//----------
+// Creation
+//----------
+    Mainloop();
+    ~Mainloop() {}
 
-    //  This should be deleted
+    bool loadmedia();
+
+//--------------------
+// Work with Renderer
+//--------------------
+    void clear_renderer()     { renderer_.render_clear(); }
+    void present_renderer() { renderer_.render_present(); }
+    renderer_ptr get_renderer() { return renderer_.get(); }
+
+    void handle_event(SDL_Event *event);
+
+    void draw_scene();
+
+//  This should be deleted
     void update(bool *quit_status);
 
+private:
+    scene_t& get_active() { return scenes_.top(); }
+    bool is_exit();
 };
 
 //--------------

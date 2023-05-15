@@ -96,14 +96,16 @@ class Field {
         private: 
             size_t part_mouse_search (Field_Part part, int x, int y);
             bool   cell_mouse_search (size_t     cell, int x, int y);
+            feature* active_feature_in_cell (size_t cell);
         public:
 
-        //---------
-        // Getters
-        //---------
-            point_t get_field_position (size_t cell, size_t num) { return field_positions [num][cell]; }
-            size_t  get_cell_size      (size_t cell)             { return field_[cell].size(); }
-            bool    empty              (size_t cell)             { return field_[cell].empty(); }
+        //-----------------------
+        // Getters and selectors
+        //-----------------------
+            SDLFeature::Colour  get_cell_colour(size_t cell);
+            point_t get_field_position      (size_t cell, size_t num) { return field_positions [num][cell]; }
+            size_t  get_cell_size           (size_t cell)             { return field_[cell].size(); }
+            bool    empty                   (size_t cell)             { return field_[cell].empty(); }
 
         //---------
         // Drawers

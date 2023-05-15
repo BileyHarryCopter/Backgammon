@@ -24,12 +24,6 @@
 #include "Settings.hpp"
 #include "Scene.hpp"
 
-using size_t        = std::size_t;
-using music_ptr     = Mix_Music *;
-using renderer_ptr  = SDL_Renderer *;
-using texture_map_t = std::map<std::string, SDLTexture::Texture>;
-using scene_t       = std::variant<SDLMenu::Menu, SDLGame::Game, SDLSettings::Settings>;
-
 namespace Custom_Exceptions
 {
     struct SDL_Init_Exception : public Base_Exception
@@ -60,6 +54,7 @@ using texture_map_t  = std::map<std::string, SDLTexture::Texture>;
 using menu_t         = SDLMenu::Menu;
 using game_t         = SDLGame::Game;
 using scene_stack_t  = SDLScene::Scene;
+using scene_t        = std::variant<SDLMenu::Menu, SDLGame::Game, SDLSettings::Settings>;
 
 struct SDL 
 {
@@ -95,7 +90,7 @@ public:
 // Creation
 //----------
     Mainloop();
-    // ~Mainloop();
+    ~Mainloop() {}
 
     bool loadmedia();
 
@@ -114,7 +109,7 @@ public:
     void update(bool *quit_status);
 
 private:
-    scene_t &get_active() { return scenes_.top(); }
+    scene_t& get_active() { return scenes_.top(); }
     bool is_exit();
 };
 

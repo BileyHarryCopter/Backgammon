@@ -3,7 +3,7 @@
         "type": "Button",
         "label": "Exit",
         "pos_x": 500,
-        "pos_y": 460,
+        "pos_y": 660,
         "width": 290,
         "height": 80,
         "path_mouse_off": "../../impl/assets/settings/exit_off.png",

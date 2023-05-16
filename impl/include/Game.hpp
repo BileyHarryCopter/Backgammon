@@ -38,16 +38,29 @@ struct game_state_info {
     int colour_ = SDLFeature::WHITE;
 
     size_t src_cell_  = NO_CELL;
-    bool src_is_head = false;
-
+    bool head_is_locked = false;
     size_t dest_cell_ = NO_CELL;
 
+    std::array <SDLFeature::Colour, 24> cell_activity = {SDLFeature::NO_COLOR};
+
     std::array<int, 4> ways_ = {0};
+    std::array<int, 4> avaliable_ways = {0}; 
 
     size_t white_f_in_house = 0;
     size_t black_f_in_house = 0;
 
+// Work with ways and motions:
+    void show();
     void switch_colour() { colour_ *= -1; }
+    
+
+    void configure_avaliable_ways ();
+    void clean_avaliable_ways ();
+    void clean_ways();
+
+    bool way_valid (size_t steps);
+    bool motion_valid (size_t steps);
+    bool check_avaliable_motion ();
 };
 
 class Game
@@ -56,7 +69,7 @@ class Game
     field_t         field_;
     texture_map_t   textures_;
     button_map_t    buttons_;
-    die_t              die_;
+    die_t           die_;
 
 public:
     //----------
@@ -65,7 +78,6 @@ public:
         Game() {}
 
         void loadmedia(renderer_ptr renderer);
-        void show_game_state_info ();
 
     //-----------------------
     // Work with texture map
@@ -92,10 +104,11 @@ public:
     //------------------
     // Work with events
     //------------------
-        void handle_event (SDL_Event* event);
     private:
-        bool motion_valid (size_t steps);
+        void update_cell_activity();
     public:
+        void handle_event (SDL_Event* event);
+    
 
         game_state_info get_state() { return state_; }
 

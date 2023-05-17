@@ -7,6 +7,17 @@
         "path_to_texture": "../../impl/assets/play/board.png"
     },
     {
+        "type": "Button",
+        "label": "Exit",
+        "pos_x": 10,
+        "pos_y": 10,
+        "width": 100,
+        "height": 100,
+        "path_mouse_off": "../../impl/assets/play/arrow.png",
+        "path_mouse_over": "../../impl/assets/play/arrow.png",
+        "path_mouse_down": "../../impl/assets/play/arrow.png"
+    },
+    {
         "type": "Texture",
         "label": "BF",
         "pos_x": 0,

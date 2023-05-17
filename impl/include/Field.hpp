@@ -36,8 +36,8 @@ const size_t  NO_CELL       = 24;
 //----------------
     const int  num_of_cells  = 24;
     const int  num_of_rows   = 15;
-    const int  feature_h     = 50;
-    const int  feature_w     = 65;
+    const int  feature_h     = 55;
+    const int  feature_w     = 60;
 
     const point_t peaks [num_of_cells] = {
             {273,  511}, {345,  511}, {420,  511}, {491,  511}, {563,  511}, {635,  511},

@@ -28,9 +28,87 @@ namespace SDLGame
         }
 
         //-----------------------------------------------------
+            bool game_state_info::cell_in_black_house (int cell) {
+                if ((cell > black_finish_cell - 6) && (cell <= black_finish_cell))
+                    return true;
+                return false;
+            }
+
+            bool game_state_info::cell_in_white_house (int cell) {
+                if ((cell > white_finish_cell - 6 ) && (cell <= white_finish_cell))
+                    return true;
+                return false;
+            }
+
+            bool game_state_info::can_be_droped () {
+                if ( colour_ == SDLFeature::BLACK   &&
+                     cell_in_black_house(src_cell_) &&
+                     black_house_is_full            ) 
+                {   
+                    for (auto& way : ways_) {
+                        if (src_cell_ + way > black_finish_cell) {
+                            way = 0;
+                            return true;
+                        }
+                    }
+                }
+
+                if ( colour_ == SDLFeature::WHITE    &&
+                     cell_in_white_house (src_cell_) &&
+                     white_house_is_full             ) 
+                {
+                    for (auto& way : ways_) {
+                        if (src_cell_ + way > white_finish_cell) {
+                            way = 0;
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            }
+
+            bool game_state_info::check_for_win () {
+                if (colour_ == SDLFeature::BLACK && black_f_in_house == 0)
+                { return true; }
+
+                if (colour_ == SDLFeature::WHITE && white_f_in_house == 0)
+                { return true; }
+
+                return false;
+            }
+
+        //-----------------------------------------------------
 
         bool game_state_info::way_valid (size_t steps) {
             std::cout << "Validation of " << steps << " steps from " << src_cell_ << std::endl;
+
+            // Simple validation of dest_cell colour == src_cell colour:
+            SDLFeature::Colour src_cell_c  = cell_activity[src_cell_];
+            SDLFeature::Colour dest_cell_c = cell_activity[(src_cell_ + steps) % 24];
+
+            if (dest_cell_c == SDLFeature::NO_COLOR)
+                dest_cell_c = src_cell_c;
+            
+            if (dest_cell_c != src_cell_c)
+                return false;
+
+            std::cout << "Passed 1st validation" << std::endl;
+
+            // Validation of finish steps
+            if ( ( colour_ == SDLFeature::BLACK          ) &&
+                 ( cell_in_black_house(src_cell_)        ) &&
+                 ( src_cell_ + steps > black_finish_cell ) &&
+                 ( !black_house_is_full                  ) ) 
+            { return false; }
+
+            else if ( ( colour_ == SDLFeature::WHITE          ) &&
+                      ( cell_in_white_house(src_cell_)        ) &&
+                      ( src_cell_ + steps > white_finish_cell ) &&
+                      ( !white_house_is_full                  ) )
+            { return false; }
+
+            std::cout << "Passed 2nd validation" << std::endl;
 
             // Validation if src_cell is head, but it's locked:
             if ( ( colour_ == SDLFeature::BLACK ) && 
@@ -42,35 +120,6 @@ namespace SDLGame
                       ( src_cell_ == 0               ) &&
                       ( head_is_locked               ) )
             { return false; }
-
-            std::cout << "Passed 1st validation" << std::endl;
-
-            // Validation of finish steps
-            if ( ( colour_ == SDLFeature::BLACK          ) &&
-                 ( src_cell_ >  black_finish_cell - 6    ) &&
-                 ( src_cell_ <= black_finish_cell        ) &&
-                 ( src_cell_ + steps > black_finish_cell ) &&
-                 ( black_f_in_house < 15                 ) ) 
-            { return false; }
-
-            else if ( ( colour_ == SDLFeature::WHITE          ) &&
-                      ( src_cell_ > white_finish_cell - 6     ) &&
-                      ( src_cell_ <= white_finish_cell        ) &&
-                      ( src_cell_ + steps > white_finish_cell ) &&
-                      ( white_f_in_house < 15                 ) )
-            { return false; }
-
-            std::cout << "Passed 2nd validation" << std::endl;
-
-            // Simple validation of dest_cell colour == src_cell colour:
-            SDLFeature::Colour src_cell_c  = cell_activity[src_cell_];
-            SDLFeature::Colour dest_cell_c = cell_activity[(src_cell_ + steps) % 24];
-
-            if (dest_cell_c == SDLFeature::NO_COLOR)
-                dest_cell_c = src_cell_c;
-            
-            if (dest_cell_c != src_cell_c)
-                return false;
             
             std::cout << "Passed 3d validation" << std::endl;
 
@@ -162,7 +211,7 @@ namespace SDLGame
                 field_.push({SDLFeature::Feature{textures_["WF"], SDLFeature::WHITE}},  0);
             }
             state_.cell_activity[0] = SDLFeature::WHITE;
-
+            
             die_.loadmedia(renderer);
         }
 
@@ -254,6 +303,18 @@ namespace SDLGame
             }
         }
 
+        void Game::drop () {
+            field_.pop(state_.src_cell_);
+
+            if (field_.empty(state_.src_cell_))
+                state_.cell_activity[state_.src_cell_] = SDLFeature::NO_COLOR;
+
+            if (state_.colour_ == SDLFeature::BLACK)
+                --state_.black_f_in_house;
+            else 
+                --state_.white_f_in_house;
+        }
+
         void Game::handle_event(SDL_Event* event) 
         {
             if (event->type == SDL_MOUSEBUTTONDOWN)
@@ -288,9 +349,31 @@ namespace SDLGame
                                      field_.get_cell_colour(mouse_cell) == state_.colour_)
                                 {
                                     state_.src_cell_ = mouse_cell;
-                                    state_.configure_avaliable_ways();
+                                    
+                                    if (state_.can_be_droped()) {
+                                        std::cout << "Drop" << std::endl;
+                                        drop();
 
-                                    state_.activity_ = IS_WAITING_DST_CELL;  
+                                        state_.src_cell_ = NO_CELL; 
+
+                                        if (state_.check_for_win()) { 
+                                            std::cout << "!!!  " << state_.colour_ << " -- WINNER !!!" << std::endl;
+                                            state_.activity_ = EXIT; 
+                                        }                   
+
+                                        else if ( state_.ways_[0] == 0 && state_.ways_[1] == 0 &&
+                                                  state_.ways_[2] == 0 && state_.ways_[3] == 0 )
+                                        {
+                                            state_.switch_colour();
+
+                                            state_.activity_ = IS_WAITING_ROLLING_DIE;
+                                        }
+                                    }
+                                    
+                                    else {
+                                        state_.configure_avaliable_ways();
+                                        state_.activity_ = IS_WAITING_DST_CELL; 
+                                    } 
                                 }
                             }
 
@@ -304,6 +387,7 @@ namespace SDLGame
                             state_.show();
                             break;
                         }
+
                     case IS_WAITING_DST_CELL:
                         {
                             size_t mouse_cell = field_.mouse_inside_cell();
@@ -323,15 +407,21 @@ namespace SDLGame
                                     field_.move_feature(state_.src_cell_, steps);
                                     update_cell_activity();
 
-                                    if ( ( state_.colour_ == SDLFeature::BLACK       ) &&
-                                         ( state_.dest_cell_ > black_finish_cell - 6 ) &&
-                                         ( state_.dest_cell_ <= black_finish_cell    ) )
-                                    { ++state_.black_f_in_house; }
+                                    if ( state_.colour_ == SDLFeature::BLACK             && 
+                                         state_.cell_in_black_house  (state_.dest_cell_) &&
+                                         !state_.cell_in_black_house (state_.src_cell_)  )
+                                    { ++state_.black_f_in_house; 
+                                      if (state_.black_f_in_house = 15) 
+                                        state_.black_house_is_full = 1;    
+                                    }
 
-                                    else if ( ( state_.colour_ == SDLFeature::WHITE       ) &&
-                                              ( state_.dest_cell_ > white_finish_cell - 6 ) &&
-                                              ( state_.dest_cell_ <= white_finish_cell    ) )
-                                    { ++state_.white_f_in_house; }   
+                                    else if ( state_.colour_ == SDLFeature::WHITE             &&
+                                              state_.cell_in_white_house  (state_.dest_cell_) &&
+                                              !state_.cell_in_white_house (state_.src_cell_)  )
+                                    { ++state_.white_f_in_house; 
+                                      if (state_.white_f_in_house = 15)
+                                        state_.white_house_is_full = 1;  
+                                    }   
 
                                     if (state_.ways_[0] == 0 && state_.ways_[1] == 0 &&
                                         state_.ways_[2] == 0 && state_.ways_[3] == 0)

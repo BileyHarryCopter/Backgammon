@@ -84,7 +84,14 @@ Mainloop::Mainloop() :
                 } 
                 break;
             case scenes::GAME:
+            {   
+                auto game_ptr = std::get_if<SDLGame::Game>(&get_active());
+                if (game_ptr->is_nonactive())
+                {
+                    scenes_.pop();
+                }
                 break;
+            }
             default:
                 break;
         }

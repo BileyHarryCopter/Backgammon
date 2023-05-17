@@ -91,6 +91,7 @@ class Field {
         // Methods for Game
         //------------------
             void push (const feature& i_feature, size_t cell = 0);
+            void pop  (size_t cell);
             void move_feature (size_t cur_cell, size_t steps);
             size_t mouse_inside_cell ();
         private: 

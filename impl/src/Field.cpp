@@ -97,6 +97,10 @@ namespace SDLField
         field_[cell].back().set_texture_pos(field_positions[cell_num][cell]);
     }
 
+    void Field::pop (size_t cell) {
+        field_[cell].pop_back();
+    }
+
     void Field::move_feature (size_t cur_cell, size_t steps) {
         if ((cur_cell > num_of_cells) || (field_[cur_cell].empty()))
             throw Custom_Exceptions::Invalid_Cell_Exception {cur_cell};

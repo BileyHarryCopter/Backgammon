@@ -40,6 +40,7 @@ public:
     void draw();
     void handle_event(SDL_Event *event);
     Button_State get_state() { return state_; }
+    void set_default() {state_ = Button_State::BUTTON_SPRITE_MOUSE_OUT;}
 };
 
 

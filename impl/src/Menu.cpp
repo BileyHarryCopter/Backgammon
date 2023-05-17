@@ -51,19 +51,15 @@ namespace SDLMenu
         }
     }
 
-    void Menu::be_active()
-    {
-        if (is_waiting())
-            state_ = Menu_State::ACTIVE;
-        else
-            throw std::runtime_error{"THROW!"};
-    }
+    void Menu::be_active() { state_ = Menu_State::ACTIVE; }
 
     void Menu::be_waiting() 
     {
-        if (is_moving_to_play() || is_moving_to_settings())
-            state_ = Menu_State::WAITING;
-        else 
-            throw std::runtime_error{"THROW!"};
+        for (auto& pair : buttons_)
+        {
+            pair.second.set_default();
+        }
+
+        state_ = Menu_State::WAITING;
     }
 }

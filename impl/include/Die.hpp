@@ -43,6 +43,7 @@ public:
     int get_status() { return value_; }
 
     void set_pos(SDL_Point pos);
+    SDL_Point get_pos() { return SDL_Point{rect_.x, rect_.y}; }
 
     void be_active()    { activity_ =     ACTIVE;}
     void be_nonactive() { activity_ = NON_ACTIVE;}

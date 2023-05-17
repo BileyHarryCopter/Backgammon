@@ -50,6 +50,8 @@ void Die::handle_event(SDL_Event *event)
 
 void Die::set_pos(SDL_Point pos)
 {
+    rect_.x = pos.x;
+    rect_.y = pos.y;
     for (auto &texture : textures_)
         texture.set_pos({pos.x, pos.y});
 }

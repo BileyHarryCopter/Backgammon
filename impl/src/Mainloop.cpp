@@ -15,7 +15,7 @@ Mainloop::Mainloop() :
     renderer_{window_,  FIRST_SUITABLE, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC}
     {
         //  Set color of background
-        renderer_.set_renderer_draw_color(255, 255, 255, 255);
+        renderer_.set_renderer_draw_color(255, 228, 191, 255);
 
         //  Initialize PNG loading
         int png_flags = IMG_INIT_PNG;

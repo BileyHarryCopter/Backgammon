@@ -281,6 +281,9 @@ namespace SDLGame
             draw_texture("Board");
             draw_field();
 
+            for (auto& pair : buttons_)
+                pair.second.draw();
+
             dies_.first.draw();
             dies_.second.draw();
         }
@@ -313,6 +316,22 @@ namespace SDLGame
 
         void Game::handle_event(SDL_Event* event) 
         {
+            for (auto& pair : buttons_)
+                pair.second.handle_event(event);
+
+            for (auto& pair : buttons_)
+            {
+                auto down_status = pair.second.get_state();
+                if (down_status == SDLWidget::Button_State::BUTTON_SPRITE_MOUSE_DOWN)
+                {
+                    if (pair.first == "Exit")
+                    {
+                        state_.activity_ = game_activity::EXIT;
+                        return;
+                    }
+                }
+            }
+
             if (event->type == SDL_MOUSEBUTTONDOWN)
             {
                 switch (state_.activity_)

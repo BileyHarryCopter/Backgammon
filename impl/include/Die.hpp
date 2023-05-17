@@ -4,6 +4,7 @@
 #include <vector>
 #include <random>
 #include <SDL2/SDL.h>
+#include "cJSON.h"
 
 #include "Texture.hpp"
 
@@ -23,7 +24,7 @@ using size_t       =         std::size_t;
 using renderer_ptr =       SDL_Renderer*;
 
     Activity   activity_ = NON_ACTIVE;
-    int val_first = 1, val_second = 1;
+    int                    value_ = 1;
     SDL_Rect                    rect_;
     std::vector<texture_t>  textures_;
 
@@ -32,14 +33,16 @@ using renderer_ptr =       SDL_Renderer*;
 public:
     Die() {}
 
-    void loadmedia(renderer_ptr renderer);
+    void loadmedia(cJSON * createinfo, renderer_ptr renderer);
 
     void set_pos(const point_t &new_pos);
     void draw();
     void handle_event(SDL_Event *event);
 
     void roll_die();
-    std::pair<int, int> get_status() { return std::pair<int, int>{val_first, val_second}; }
+    int get_status() { return value_; }
+
+    void set_pos(SDL_Point pos);
 
     void be_active()    { activity_ =     ACTIVE;}
     void be_nonactive() { activity_ = NON_ACTIVE;}
@@ -48,6 +51,7 @@ public:
     bool is_nonactive() { return activity_ == NON_ACTIVE;}
 
 };
+
 }
 
 #endif

@@ -22,6 +22,10 @@ using die_t         = SDLDie::Die;
 const int black_finish_cell = 11;
 const int white_finish_cell = 23;
 
+const int die_first_center_x = 680;
+const int die_second_center_x = 760;
+const int die_movement = 200;
+
 enum game_activity
 {
     EXIT   = 0,

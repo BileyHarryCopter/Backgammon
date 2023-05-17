@@ -192,15 +192,9 @@ namespace SDLGame
                 else if (type == std::string{"Object"})
                 {
                     if (label == std::string{"Die_1"})
-                    {
                         dies_.first.loadmedia(node, renderer);
-                        std::cout << "\n\nDie_1\n\n";                        
-                    }
                     else
-                    {
                         dies_.second.loadmedia(node, renderer);
-                        std::cout << "\n\nDie_2\n\n";
-                    }
                 }
             }
             cJSON_Delete(json_data);
@@ -211,8 +205,7 @@ namespace SDLGame
                 field_.push({SDLFeature::Feature{textures_["WF"], SDLFeature::WHITE}},  0);
             }
             state_.cell_activity[0] = SDLFeature::WHITE;
-            
-            die_.loadmedia(renderer);
+            state_.cell_activity[12] = SDLFeature::BLACK;
         }
 
         void game_state_info::show () {
@@ -268,6 +261,9 @@ namespace SDLGame
             {
                 dies_.first.roll_die();
                 dies_.second.roll_die();
+
+                dies_.first.set_pos (SDL_Point{die_first_center_x  - die_movement * state_.colour_,  dies_.first.get_pos().y});
+                dies_.second.set_pos(SDL_Point{die_second_center_x - die_movement * state_.colour_, dies_.second.get_pos().y});
                 return true;
             }
             return false;

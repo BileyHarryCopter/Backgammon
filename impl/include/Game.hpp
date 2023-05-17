@@ -4,6 +4,7 @@
 #include <map>
 #include <array>
 #include <SDL2/SDL.h>
+#include "Utility.hpp"
 
 #include "Texture.hpp"
 #include "Widget.hpp"
@@ -42,11 +43,11 @@ struct game_state_info {
 
 class Game
 {
-    game_state_info state_;
-    field_t         field_;
-    texture_map_t   textures_;
-    button_map_t    buttons_;
-    die_t              die_;
+    game_state_info        state_;
+    field_t                field_;
+    texture_map_t       textures_;
+    button_map_t         buttons_;
+    std::pair<die_t, die_t> dies_;
 
 public:
     //----------
@@ -54,7 +55,7 @@ public:
     //----------
         Game() {}
 
-        void loadmedia(renderer_ptr renderer);
+        void loadmedia(const std::string& path, renderer_ptr renderer);
         void show_game_state_info ();
 
     //-----------------------
@@ -73,6 +74,12 @@ public:
     private:
         void draw_field() { field_.draw_all(); }
     public:
+
+    //----------------
+    // Work with dies
+    //----------------
+        bool is_dies_active(SDL_Event * event);
+        std::pair<int, int> dies_status();
     
     //----------
     // Draw all

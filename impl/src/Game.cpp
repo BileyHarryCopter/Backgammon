@@ -5,32 +5,47 @@ namespace SDLGame
     //----------
     // Creation
     //----------
-        void Game::loadmedia(renderer_ptr renderer) 
+        void Game::loadmedia(const std::string& path, renderer_ptr renderer)
         {
-            SDLTexture::Texture board ("../../impl/assets/board_test.png", renderer);
-            textures_.insert({"board", board});
+            auto text = Service::readfile(path);
+            cJSON *json_data = cJSON_Parse(text.data());
 
-            std::vector <SDLTexture::Texture> bf_textures;
-            std::vector <SDLFeature::Feature> bfs;
-            for (size_t i = 0; i < 15; ++i) {
-                bf_textures.push_back({"../../impl/assets/bf.png", renderer});
-
-                bfs.push_back({bf_textures[i], SDLFeature::BLACK});
-
-                field_.push(bfs[i], 12);
+            for (auto node = json_data->child; node != NULL; node = node->next)
+            {
+                auto type  =  cJSON_GetObjectItem(node, "type")->valuestring;
+                auto label = cJSON_GetObjectItem(node, "label")->valuestring;
+                if (type == std::string{"Texture"})
+                {
+                    SDLTexture::Texture texture{cJSON_GetObjectItem(node, "path_to_texture")->valuestring, renderer};
+                                                
+                    textures_.insert({label, texture});
+                }
+                else if (type == std::string{"Button"})
+                {
+                    SDLWidget::Button button {node, renderer};
+                    buttons_.insert({label, button});
+                }
+                else if (type == std::string{"Object"})
+                {
+                    if (label == std::string{"Die_1"})
+                    {
+                        dies_.first.loadmedia(node, renderer);
+                        std::cout << "\n\nDie_1\n\n";                        
+                    }
+                    else
+                    {
+                        dies_.second.loadmedia(node, renderer);
+                        std::cout << "\n\nDie_2\n\n";
+                    }
+                }
             }
+            cJSON_Delete(json_data);
 
-            std::vector <SDLTexture::Texture> wf_textures;
-            std::vector <SDLFeature::Feature> wfs;
-            for (size_t i = 0; i < 15; ++i) {
-                wf_textures.push_back({"../../impl/assets/wf.png", renderer});
-
-                wfs.push_back({wf_textures[i], SDLFeature::WHITE});
-
-                field_.push(wfs[i], 0);
+            for (auto i = 0; i < 15; ++i)
+            {
+                field_.push({SDLFeature::Feature{textures_["BF"], SDLFeature::BLACK}}, 12);
+                field_.push({SDLFeature::Feature{textures_["WF"], SDLFeature::WHITE}},  0);
             }
-
-            die_.loadmedia(renderer);
         }
 
         void Game::show_game_state_info () {
@@ -63,13 +78,37 @@ namespace SDLGame
             textures_[id].draw();
         }
 
+    //----------------
+    // Work with dies
+    //----------------
+        bool Game::is_dies_active(SDL_Event * event)
+        {
+            dies_.first.handle_event(event);
+            dies_.second.handle_event(event);
+
+            if (dies_.first.is_active() || dies_.second.is_active())
+            {
+                dies_.first.roll_die();
+                dies_.second.roll_die();
+                return true;
+            }
+            return false;
+        }
+        std::pair<int, int> Game::dies_status()
+        {
+            return std::pair<int ,int> {dies_.first.get_status(), dies_.second.get_status()};
+        }
+
+
     //----------
     // Draw all
     //----------
         void Game::draw() {
-            draw_texture("board");
+            draw_texture("Board");
             draw_field();
-            die_.draw();
+
+            dies_.first.draw();
+            dies_.second.draw();
         }
 
     //------------------
@@ -83,11 +122,9 @@ namespace SDLGame
                 {
                     case IS_WAITING_ROLLING_DIE:
                         {
-                            die_.handle_event(event);
-
-                            if (die_.is_active())
+                            if (is_dies_active(event))
                             {
-                                auto ways = die_.get_status();
+                                auto ways = dies_status();
                                 if (ways.first == ways.second)
                                     state_.ways_.fill(ways.first);
                                 else
@@ -97,10 +134,9 @@ namespace SDLGame
                                 }
 
                                 state_.activity_ = IS_WAITING_SRC_CELL;
-                                
-                                show_game_state_info();
                             }
 
+                            show_game_state_info();
                             break;
                         }
                     case IS_WAITING_SRC_CELL:

@@ -31,7 +31,7 @@ Mainloop::Mainloop() :
     {
         menu_.loadmedia    ("../../impl/assets/menu/menu_media.json",         renderer_.get());
         settings_.loadmedia("../../impl/assets/settings/settings_media.json", renderer_.get());
-        game_.loadmedia(renderer_.get());
+        game_.loadmedia    ("../../impl/assets/play/play_media.json",         renderer_.get());
 
         scenes_.push(menu_);
 
